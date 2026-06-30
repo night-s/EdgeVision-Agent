@@ -3,14 +3,17 @@
 #include "core/ipc/SafeQueue.h"
 #include "core/memory/MemoryPool.h"
 #include "hardware/rknpu_infer/RKNNEngine.h"
+#include "hardware/rknpu_infer/Yolov5PostProcess.h"
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <cstdlib>
 #include <atomic>
+#include <unistd.h>  
+#include <fcntl.h>   
 
-const int CHANNELS = 3;
 const int WIDTH = 640;
 const int HEIGHT = 480;
+const int CHANNELS = 3;
 const size_t FRAME_SIZE = WIDTH * HEIGHT * CHANNELS;
 
 MemoryPool& pool = MemoryPool::getInstance(FRAME_SIZE, 4);
@@ -28,75 +31,82 @@ void capture_thread_func(V4L2Camera* cam) {
     int frame_size;
     while (is_running) {
         if (cam->getFrame(&frame_data, frame_size)) {
-            std::cout << "[DEBUG] GetFrame SUCCESS! Pushing to queue..." << std::endl;
             void* mem_ptr = pool.allocate();
             cv::Mat yuyv(HEIGHT, WIDTH, CV_8UC2, frame_data);
             cv::Mat bgr(HEIGHT, WIDTH, CV_8UC3, mem_ptr);
             cv::cvtColor(yuyv, bgr, cv::COLOR_YUV2BGR_YUYV);
-            
-            // ⚠️ 确保这里调用了 releaseFrame！否则下一帧拿不到
             cam->releaseFrame(); 
             
             PooledFrame pf;
             pf.data_ptr = mem_ptr;
             pf.mat = bgr;
             frame_queue.push(pf);
-        } else {
-            // 这一行之前没加，现在必须加上！
-            std::cout << "[DEBUG] GetFrame FAILED! No data yet." << std::endl;
         }
     }
 }
 
 int main() {
-    setenv("DISPLAY", ":0", 1);
-
-    // 1. 初始化 NPU 引擎
     RKNNEngine engine;
-    if (!engine.loadModel("models/yolov5s-640-640.rknn")) {
-        std::cerr << "Failed to load RKNN model!" << std::endl;
-        return -1;
-    }
+    if (!engine.loadModel("models/yolov5s-640-640.rknn")) return -1;
 
-    // 2. 初始化摄像头
     V4L2Camera cam("/dev/video10", WIDTH, HEIGHT);
-    if (!cam.open() || !cam.start()) {
-        std::cerr << "Camera init failed!" << std::endl;
-        return -1;
-    }
+    if (!cam.open() || !cam.start()) return -1;
 
-    // 3. 启动采集线程
+    // 注册队列丢帧回调，防止内存池泄漏
+    frame_queue.setDropCallback([](const PooledFrame& dropped_pf) {
+        pool.deallocate(dropped_pf.data_ptr);
+    });
+
     std::thread capture_thread(capture_thread_func, &cam);
-    // cv::namedWindow("EdgeVision-Agent", cv::WINDOW_AUTOSIZE);
-    std::cout << "NPU Pipeline started. Press 'q' to quit." << std::endl;
+    std::cout << "NPU Pipeline started. Saving result image every 30 frames. Press 'q' to quit." << std::endl;
 
-    // 4. 消费者主循环
+    // 设置标准输入为非阻塞模式，让主循环可以检测按键
+    int old_flags = fcntl(STDIN_FILENO, F_GETFL, 0);
+    fcntl(STDIN_FILENO, F_SETFL, old_flags | O_NONBLOCK);
+
+    Yolov5PostProcess post_process;
+    int frame_count = 0;
+
     while (is_running) {
         PooledFrame pf;
         if (frame_queue.pop(pf, 1000)) {
-            std::cout << "[DEBUG] Consumer got frame! Inferring..." << std::endl;
+            // 1. 准备接收 NPU 输出
+            rknn_output outputs[3]; 
+            float infer_time = engine.infer(pf.mat, outputs);
             
-            // 调用 NPU 进行推理
-            float infer_time = engine.infer(pf.mat);
-            
-            // 打印推理耗时到终端，替代在图像上画字
-            std::cout << "[RESULT] NPU Infer time: " << infer_time << " ms" << std::endl;
+            // 2. 后处理解析检测框
+            std::vector<Detection> dets = post_process.process(outputs, WIDTH, HEIGHT);
 
-            cv::putText(pf.mat, text, cv::Point(10, 30), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 255, 0), 2);
-            cv::imshow("EdgeVision-Agent", pf.mat);
+            // 3. 释放 NPU 输出内存
+            rknn_outputs_release(engine.getCtx(), 3, outputs);
+
+            // 4. 每隔 30 帧保存一次图片
+            if (frame_count % 30 == 0) {
+                post_process.draw(pf.mat, dets);
+                std::string text = "Infer: " + std::to_string(infer_time) + "ms, Dets: " + std::to_string(dets.size());
+                cv::putText(pf.mat, text, cv::Point(10, 30), cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(0, 0, 255), 2);
+                
+                cv::imwrite("result_output.jpg", pf.mat);
+                std::cout << "[RESULT] Saved result_output.jpg | Infer: " << infer_time << "ms | Dets: " << dets.size() << std::endl;
+            }
+            frame_count++;
             
-            // 用终端输入 'q' 代替 cv::waitKey
-            if (cv::waitKey(1) == 'q') {
+            pool.deallocate(pf.data_ptr);
+            
+            // 5. 检测键盘 'q'，实现优雅退出
+            char ch;
+            if (read(STDIN_FILENO, &ch, 1) > 0 && ch == 'q') {
                 is_running = false;
                 break;
             }
-            
-            pool.deallocate(pf.data_ptr);
-        } else {
-            std::cout << "[DEBUG] Consumer timeout, no frame." << std::endl;
         }
     }
+
+    // 恢复终端设置
+    fcntl(STDIN_FILENO, F_SETFL, old_flags);
+    
     capture_thread.join();
     cam.stop();
+    std::cout << "EdgeVision-Agent cleanly exited." << std::endl;
     return 0;
 }

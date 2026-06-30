@@ -46,26 +46,24 @@ bool RKNNEngine::loadModel(const std::string& modelPath) {
     return true;
 }
 
-float RKNNEngine::infer(const cv::Mat& input) {
+// 修改函数签名
+float RKNNEngine::infer(const cv::Mat& input, rknn_output* outputs) {
     if (!initialized_) return -1.0f;
 
-    // 1. 预处理: YOLOv5 需要 640x640 的正方形输入，采用 Letterbox 填充
+    // 1. 预处理: Letterbox 填充
     cv::Mat resized;
     float scale = std::min(640.0f / input.cols, 640.0f / input.rows);
     int new_w = input.cols * scale;
     int new_h = input.rows * scale;
     cv::resize(input, resized, cv::Size(new_w, new_h));
     
-    // 计算上下左右的 padding
     int top = (640 - new_h) / 2;
     int bottom = 640 - new_h - top;
     int left = (640 - new_w) / 2;
     int right = 640 - new_w - left;
-    letterbox_pad_ = left; // 记录用于后处理还原坐标
+    letterbox_pad_ = left;
     
     cv::copyMakeBorder(resized, resized, top, bottom, left, right, cv::BORDER_CONSTANT, cv::Scalar(114, 114, 114));
-
-    // BGR 转 RGB
     cv::Mat rgb;
     cv::cvtColor(resized, rgb, cv::COLOR_BGR2RGB);
 
@@ -77,40 +75,26 @@ float RKNNEngine::infer(const cv::Mat& input) {
     inputs[0].size = 640 * 640 * 3;
     inputs[0].fmt = RKNN_TENSOR_NHWC;
     inputs[0].buf = rgb.data;
-    inputs[0].pass_through = 0; // SDK内部会做归一化
+    inputs[0].pass_through = 0;
 
     int ret = rknn_inputs_set(ctx_, 1, inputs);
-    if (ret < 0) {
-        std::cerr << "[RKNN] rknn_inputs_set failed! ret=" << ret << std::endl;
-        return -1.0f;
-    }
+    if (ret < 0) return -1.0f;
 
     // 3. 执行推理并计时
     auto start = std::chrono::high_resolution_clock::now();
     ret = rknn_run(ctx_, nullptr);
     auto end = std::chrono::high_resolution_clock::now();
     
-    if (ret < 0) {
-        std::cerr << "[RKNN] rknn_run failed! ret=" << ret << std::endl;
-        return -1.0f;
-    }
+    if (ret < 0) return -1.0f;
 
-    // 4. 获取输出 (此处仅获取，暂不做后处理解析)
-    rknn_output outputs[io_num_.n_output];
-    memset(outputs, 0, sizeof(outputs));
+    // 4. 获取输出 (注意：这里不再释放，由调用者释放)
+    memset(outputs, 0, sizeof(rknn_output) * io_num_.n_output);
     for (int i = 0; i < io_num_.n_output; ++i) {
         outputs[i].index = i;
-        outputs[i].want_float = 0; // 保持 INT8 原始输出，加速后处理
+        outputs[i].want_float = 1;  //直接获取浮点数，省去手动反量化
     }
     ret = rknn_outputs_get(ctx_, io_num_.n_output, outputs, nullptr);
-    if (ret < 0) {
-        std::cerr << "[RKNN] rknn_outputs_get failed! ret=" << ret << std::endl;
-        return -1.0f;
-    }
+    if (ret < 0) return -1.0f;
 
-    // 释放输出内存
-    rknn_outputs_release(ctx_, io_num_.n_output, outputs);
-
-    // 返回推理耗时 (毫秒)
     return std::chrono::duration<float, std::milli>(end - start).count();
 }

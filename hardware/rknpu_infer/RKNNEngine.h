@@ -10,19 +10,15 @@ public:
     RKNNEngine();
     ~RKNNEngine();
 
-    // 加载 RKNN 模型
     bool loadModel(const std::string& modelPath);
+    float infer(const cv::Mat& input, rknn_output* outputs);
 
-    // 执行推理 (输入 BGR 格式的 cv::Mat)
-    // 返回推理耗时 (毫秒)
-    float infer(const cv::Mat& input);
+    rknn_context getCtx() { return ctx_; }
 
 private:
     rknn_context ctx_;
     rknn_input_output_num io_num_;
     bool initialized_;
-    
-    // 预处理缩放用的 pad 值
     int letterbox_pad_;
 };
 
