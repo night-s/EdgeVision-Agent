@@ -10,6 +10,13 @@
 #include <atomic>
 #include <unistd.h>  
 #include <fcntl.h>   
+#include<agent/SkillManager.h>
+#include "agent/actions/CaptureSkill.h" 
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include "third_party/nlohmann_json.hpp"
+using json = nlohmann::json;
 
 const int WIDTH = 640;
 const int HEIGHT = 480;
@@ -52,6 +59,10 @@ int main() {
     V4L2Camera cam("/dev/video10", WIDTH, HEIGHT);
     if (!cam.open() || !cam.start()) return -1;
 
+    // 初始化 SkillManager 并注册技能
+    SkillManager skill_manager;
+    skill_manager.registerSkill(std::make_unique<CaptureSkill>());
+
     // 注册队列丢帧回调，防止内存池泄漏
     frame_queue.setDropCallback([](const PooledFrame& dropped_pf) {
         pool.deallocate(dropped_pf.data_ptr);
@@ -66,6 +77,65 @@ int main() {
 
     Yolov5PostProcess post_process;
     int frame_count = 0;
+
+    // === TCP 命令接收队列 ===
+    SafeQueue<std::string> cmd_queue;
+    std::atomic<bool> tcp_running(true);
+
+    // === TCP 服务端线程 ===
+    std::thread tcp_thread([&]() {
+        int server_fd = socket(AF_INET, SOCK_STREAM, 0);
+        if (server_fd < 0) {
+            std::cerr << "[TCP Error] Socket creation failed!" << std::endl;
+            return;
+        }
+
+        int opt = 1;
+        setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+
+        struct sockaddr_in address;
+        address.sin_family = AF_INET;
+        address.sin_addr.s_addr = INADDR_ANY; // 监听所有网卡接口
+        address.sin_port = htons(9000);
+
+        // 绑定端口，并检查是否失败！
+        if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
+            std::cerr << "[TCP Error] Bind failed on port 9000! (可能是端口被占用)" << std::endl;
+            close(server_fd);
+            return;
+        }
+
+        // 开始监听
+        if (listen(server_fd, 3) < 0) {
+            std::cerr << "[TCP Error] Listen failed!" << std::endl;
+            close(server_fd);
+            return;
+        }
+
+        std::cout << "[TCP] Listening on port 9000 (All interfaces). Ready for LLM commands!" << std::endl;
+
+        while (tcp_running) {
+            int client_fd = accept(server_fd, nullptr, nullptr);
+            if (client_fd < 0) continue;
+
+            char buffer[1024] = {0};
+            if (read(client_fd, buffer, 1024) > 0) {
+                try {
+                    std::string raw_cmd(buffer);
+                    json j = json::parse(raw_cmd);
+                    if (j.contains("skill_name")) {
+                        std::string skill_name = j["skill_name"];
+                        cmd_queue.push(skill_name);
+                        std::cout << "[TCP] Received command: " << skill_name << std::endl;
+                    }
+                } catch (...) {
+                    std::cerr << "[TCP] Invalid JSON received." << std::endl;
+                }
+            }
+            close(client_fd);
+        }
+        close(server_fd);
+    });
 
     // 消费者主循环
     while (is_running) {
@@ -84,20 +154,8 @@ int main() {
             // 3. 释放 NPU 输出内存
             rknn_outputs_release(engine.getCtx(), 3, outputs);
 
-            // 🆕 4. Agent 决策逻辑：检测到"人"或"车"时的行为
-            bool target_detected = false;
-            for (auto& d : dets) {
-                if (d.class_id == 0 || d.class_id == 1 || d.class_id == 2) { // 人, 自行车, 车
-                    target_detected = true;
-                    break;
-                }
-            }
-
-            if (target_detected) {
-                std::cout << "[AGENT ACTION] Target detected! Triggering alarm..." << std::endl;
-                post_process.draw(pf.mat, dets);
-                cv::imwrite("event_capture.jpg", pf.mat); // 抓拍事件现场
-            }
+            // 4. Agent 决策逻辑
+            skill_manager.execute(dets, pf.mat); 
 
             // 5. 每隔 30 帧保存一次展示图片
             if (frame_count % 30 == 0) {
@@ -108,8 +166,22 @@ int main() {
                 std::cout << "[RESULT] Saved result_output.jpg | Infer: " << infer_time << "ms | Dets: " << dets.size() << std::endl;
             }
             frame_count++;
-            
+
+            // === 执行网络命令 ===
+            std::string cmd;
+            if (cmd_queue.pop(cmd, 0)) { 
+                if (cmd == "CaptureSkill") {
+                    std::cout << "[EXEC] Executing remote command: CaptureSkill" << std::endl;
+                    bool executed = skill_manager.executeSkillByName(cmd, dets, pf.mat);
+                    if (executed) {
+                        std::cout << "[EXEC] Command executed successfully." << std::endl;
+                    }
+                }
+            }
+
+            // 归还内存池
             pool.deallocate(pf.data_ptr);
+
             
             // 5. 检测键盘 'q'，实现优雅退出
             char ch;
