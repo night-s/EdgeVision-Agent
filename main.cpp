@@ -2,16 +2,18 @@
 #include "core/thread/ThreadPool.h"
 #include "core/ipc/SafeQueue.h"
 #include "core/memory/MemoryPool.h"
+#include "core/reactor/EventLoop.h"
+#include "core/reactor/TcpServer.h"
 #include "hardware/rknpu_infer/RKNNEngine.h"
 #include "hardware/rknpu_infer/Yolov5PostProcess.h"
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <cstdlib>
 #include <atomic>
-#include <unistd.h>  
-#include <fcntl.h>   
-#include<agent/SkillManager.h>
-#include "agent/actions/CaptureSkill.h" 
+#include <unistd.h>
+#include <fcntl.h>
+#include <agent/SkillManager.h>
+#include "agent/actions/CaptureSkill.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -23,7 +25,8 @@ const int HEIGHT = 480;
 const int CHANNELS = 3;
 const size_t FRAME_SIZE = WIDTH * HEIGHT * CHANNELS;
 
-MemoryPool& pool = MemoryPool::getInstance(FRAME_SIZE, 4);
+// MemoryPool: 先无参获取单例，再两阶段初始化
+MemoryPool& pool = MemoryPool::getInstance();
 
 struct PooledFrame {
     cv::Mat mat;
@@ -33,17 +36,25 @@ struct PooledFrame {
 SafeQueue<PooledFrame> frame_queue;
 std::atomic<bool> is_running(true);
 
+// TCP 命令接收队列（EventLoop 线程 → Main 线程）
+SafeQueue<std::string> cmd_queue;
+
 void capture_thread_func(V4L2Camera* cam) {
     unsigned char* frame_data;
     int frame_size;
     while (is_running) {
         if (cam->getFrame(&frame_data, frame_size)) {
             void* mem_ptr = pool.allocate();
+            if (!mem_ptr) {
+                // 池未初始化或 OOM
+                cam->releaseFrame();
+                continue;
+            }
             cv::Mat yuyv(HEIGHT, WIDTH, CV_8UC2, frame_data);
             cv::Mat bgr(HEIGHT, WIDTH, CV_8UC3, mem_ptr);
             cv::cvtColor(yuyv, bgr, cv::COLOR_YUV2BGR_YUYV);
-            cam->releaseFrame(); 
-            
+            cam->releaseFrame();
+
             PooledFrame pf;
             pf.data_ptr = mem_ptr;
             pf.mat = bgr;
@@ -53,6 +64,9 @@ void capture_thread_func(V4L2Camera* cam) {
 }
 
 int main() {
+    // === 初始化 MemoryPool ===
+    pool.init(FRAME_SIZE, 4);
+
     RKNNEngine engine;
     if (!engine.loadModel("models/yolov5s-640-640.rknn")) return -1;
 
@@ -68,6 +82,68 @@ int main() {
         pool.deallocate(dropped_pf.data_ptr);
     });
 
+    // === 创建 EventLoop + TcpServer ===
+    EventLoop event_loop;
+    TcpServer tcp_server(event_loop);
+
+    // TCP 消息回调：收到 JSON RPC 命令，推入 cmd_queue
+    tcp_server.setMessageCallback([&](int client_fd, const std::string& msg) {
+        try {
+            json j = json::parse(msg);
+            if (j.contains("skill_name")) {
+                std::string skill_name = j["skill_name"];
+                cmd_queue.push(skill_name);
+                std::cout << "[TCP] Received command: " << skill_name << std::endl;
+
+                // 回复确认
+                json resp;
+                resp["status"] = "ok";
+                resp["command"] = skill_name;
+                tcp_server.sendResponse(client_fd, resp.dump() + "\n");
+            }
+        } catch (const json::parse_error& e) {
+            std::cerr << "[TCP] JSON parse error: " << e.what() << std::endl;
+            json err;
+            err["status"] = "error";
+            err["reason"] = "invalid json";
+            tcp_server.sendResponse(client_fd, err.dump() + "\n");
+        }
+    });
+
+    tcp_server.setConnectionCallback([](int client_fd) {
+        std::cout << "[TCP] Client connected fd=" << client_fd << std::endl;
+    });
+
+    tcp_server.setCloseCallback([](int client_fd) {
+        std::cout << "[TCP] Client disconnected fd=" << client_fd << std::endl;
+    });
+
+    // 启动 TCP 服务（端口 9000）
+    if (!tcp_server.start(9000)) {
+        std::cerr << "Failed to start TcpServer on port 9000" << std::endl;
+        return -1;
+    }
+
+    // === 添加健康检查定时器（每 5 秒）===
+    // 使用 EventLoop 的 runInLoop 保证定时器操作在 EventLoop 线程中执行
+    event_loop.runInLoop([&]() {
+        event_loop.timerMgr().addTimer(5000, 5000, [&]() {
+            std::cout << "[Health] running, queue="
+                      << frame_queue.size()
+                      << ", connections="
+                      << tcp_server.connectionCount()
+                      << std::endl;
+        });
+    });
+
+    // === 启动 EventLoop 线程 ===
+    std::thread event_thread([&]() {
+        std::cout << "[EventLoop] Started on thread" << std::endl;
+        event_loop.run();
+        std::cout << "[EventLoop] Exited." << std::endl;
+    });
+
+    // === 启动采集线程 ===
     std::thread capture_thread(capture_thread_func, &cam);
     std::cout << "NPU Pipeline started. Saving result image every 30 frames. Press 'q' to quit." << std::endl;
 
@@ -78,84 +154,25 @@ int main() {
     Yolov5PostProcess post_process;
     int frame_count = 0;
 
-    // === TCP 命令接收队列 ===
-    SafeQueue<std::string> cmd_queue;
-    std::atomic<bool> tcp_running(true);
-
-    // === TCP 服务端线程 ===
-    std::thread tcp_thread([&]() {
-        int server_fd = socket(AF_INET, SOCK_STREAM, 0);
-        if (server_fd < 0) {
-            std::cerr << "[TCP Error] Socket creation failed!" << std::endl;
-            return;
-        }
-
-        int opt = 1;
-        setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
-
-        struct sockaddr_in address;
-        address.sin_family = AF_INET;
-        address.sin_addr.s_addr = INADDR_ANY; // 监听所有网卡接口
-        address.sin_port = htons(9000);
-
-        // 绑定端口，并检查是否失败！
-        if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
-            std::cerr << "[TCP Error] Bind failed on port 9000! (可能是端口被占用)" << std::endl;
-            close(server_fd);
-            return;
-        }
-
-        // 开始监听
-        if (listen(server_fd, 3) < 0) {
-            std::cerr << "[TCP Error] Listen failed!" << std::endl;
-            close(server_fd);
-            return;
-        }
-
-        std::cout << "[TCP] Listening on port 9000 (All interfaces). Ready for LLM commands!" << std::endl;
-
-        while (tcp_running) {
-            int client_fd = accept(server_fd, nullptr, nullptr);
-            if (client_fd < 0) continue;
-
-            char buffer[1024] = {0};
-            if (read(client_fd, buffer, 1024) > 0) {
-                try {
-                    std::string raw_cmd(buffer);
-                    json j = json::parse(raw_cmd);
-                    if (j.contains("skill_name")) {
-                        std::string skill_name = j["skill_name"];
-                        cmd_queue.push(skill_name);
-                        std::cout << "[TCP] Received command: " << skill_name << std::endl;
-                    }
-                } catch (...) {
-                    std::cerr << "[TCP] Invalid JSON received." << std::endl;
-                }
-            }
-            close(client_fd);
-        }
-        close(server_fd);
-    });
-
-    // 消费者主循环
+    // === 消费者主循环 ===
     while (is_running) {
         PooledFrame pf;
         if (frame_queue.pop(pf, 1000)) {
             // 1. 准备接收 NPU 输出
-            rknn_output outputs[3]; 
+            rknn_output outputs[3];
             float infer_time = engine.infer(pf.mat, outputs);
-            
+
             // 2. 后处理解析检测框
             std::vector<Detection> dets = post_process.process(outputs, WIDTH, HEIGHT);
-            
+
             // 防爆保护
             if (dets.size() > 200) dets.clear();
-            
+
             // 3. 释放 NPU 输出内存
             rknn_outputs_release(engine.getCtx(), 3, outputs);
 
             // 4. Agent 决策逻辑
-            skill_manager.execute(dets, pf.mat); 
+            skill_manager.execute(dets, pf.mat);
 
             // 5. 每隔 30 帧保存一次展示图片
             if (frame_count % 30 == 0) {
@@ -167,23 +184,24 @@ int main() {
             }
             frame_count++;
 
-            // === 执行网络命令 ===
+            // === 执行网络命令（非阻塞检查 cmd_queue） ===
             std::string cmd;
-            if (cmd_queue.pop(cmd, 0)) { 
+            if (cmd_queue.pop(cmd, 0)) {
                 if (cmd == "CaptureSkill") {
                     std::cout << "[EXEC] Executing remote command: CaptureSkill" << std::endl;
                     bool executed = skill_manager.executeSkillByName(cmd, dets, pf.mat);
                     if (executed) {
                         std::cout << "[EXEC] Command executed successfully." << std::endl;
                     }
+                } else {
+                    std::cout << "[EXEC] Unknown command: " << cmd << std::endl;
                 }
             }
 
             // 归还内存池
             pool.deallocate(pf.data_ptr);
 
-            
-            // 5. 检测键盘 'q'，实现优雅退出
+            // 6. 检测键盘 'q'，实现优雅退出
             char ch;
             if (read(STDIN_FILENO, &ch, 1) > 0 && ch == 'q') {
                 is_running = false;
@@ -192,10 +210,17 @@ int main() {
         }
     }
 
-    // 恢复终端设置
+    // === 恢复终端设置 ===
     fcntl(STDIN_FILENO, F_SETFL, old_flags);
-    
+
+    // === 优雅关闭 ===
+    std::cout << "[Shutdown] Stopping event loop..." << std::endl;
+    event_loop.stop();
+    event_thread.join();
+
+    std::cout << "[Shutdown] Stopping capture thread..." << std::endl;
     capture_thread.join();
+
     cam.stop();
     std::cout << "EdgeVision-Agent cleanly exited." << std::endl;
     return 0;
