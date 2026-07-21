@@ -4,24 +4,38 @@
 #include <cstddef>
 #include <mutex>
 #include <vector>
+#include <iostream>
 
 class MemoryPool {
 public:
-    // 单例模式，全局共享
-    static MemoryPool& getInstance(size_t blockSize, int initialBlocks = 4) {
-        static MemoryPool instance(blockSize, initialBlocks);
+    // 无参单例访问 — 调用 init() 完成两阶段初始化
+    static MemoryPool& getInstance() {
+        static MemoryPool instance;
         return instance;
+    }
+
+    // 两阶段初始化：main() 中只调用一次
+    void init(size_t blockSize, int initialBlocks = 4) {
+        std::lock_guard<std::mutex> lock(mtx_);
+        if (initialized_) {
+            std::cerr << "[MemoryPool] Warning: double init ignored." << std::endl;
+            return;
+        }
+        block_size_ = blockSize;
+        expandPool(initialBlocks);
+        initialized_ = true;
     }
 
     // 分配一块内存 (O(1))
     void* allocate() {
         std::lock_guard<std::mutex> lock(mtx_);
+        if (!initialized_) return nullptr;  // fail-fast
         if (free_head_ == nullptr) {
             expandPool(4); // 自动扩容
         }
         void* ptr = free_head_;
         // 侵入式链表核心：内存块头部存放了下一个空闲块的地址
-        free_head_ = *reinterpret_cast<void**>(free_head_); 
+        free_head_ = *reinterpret_cast<void**>(free_head_);
         return ptr;
     }
 
@@ -30,7 +44,7 @@ public:
         if (!ptr) return;
         std::lock_guard<std::mutex> lock(mtx_);
         // 将归还的块插入链表头部
-        *reinterpret_cast<void**>(ptr) = free_head_; 
+        *reinterpret_cast<void**>(ptr) = free_head_;
         free_head_ = ptr;
     }
 
@@ -41,9 +55,10 @@ public:
     }
 
 private:
-    MemoryPool(size_t blockSize, int initialBlocks) : block_size_(blockSize), free_head_(nullptr) {
-        expandPool(initialBlocks);
-    }
+    MemoryPool() = default;  // 默认构造，等待 init()
+
+    MemoryPool(const MemoryPool&) = delete;
+    MemoryPool& operator=(const MemoryPool&) = delete;
 
     void expandPool(int numBlocks) {
         for (int i = 0; i < numBlocks; ++i) {
@@ -55,10 +70,11 @@ private:
         }
     }
 
-    size_t block_size_;
-    void* free_head_;        // 空闲链表头部（侵入式）
-    std::vector<void*> chunks_; // 用于析构时统一释放
+    size_t block_size_ = 0;
+    void* free_head_ = nullptr;
+    std::vector<void*> chunks_;
     std::mutex mtx_;
+    bool initialized_ = false;
 };
 
 #endif

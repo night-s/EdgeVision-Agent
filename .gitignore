@@ -2,3 +2,6 @@ build/
 *.o
 *.so
 *.a
+cloud/__pycache__/
+event_capture.jpg
+result_output.jpg
