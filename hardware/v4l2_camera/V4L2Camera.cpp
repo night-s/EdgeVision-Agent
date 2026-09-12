@@ -1,149 +1,96 @@
 #include "V4L2Camera.h"
+#include <linux/videodev2.h>
 #include <fcntl.h>
-#include <unistd.h>
+#include <poll.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <unistd.h>
+#include <cerrno>
 #include <cstring>
-#include <iostream>
-#include <errno.h>
-
-V4L2Camera::V4L2Camera(const std::string& device, int width, int height)
-    : device_(device), width_(width), height_(height), fd_(-1), buffers_(nullptr), n_buffers_(0), current_buf_index_(-1) {}
-
-V4L2Camera::~V4L2Camera() {
-    stop();
-    if (buffers_) {
-        for (int i = 0; i < n_buffers_; ++i) {
-            if (buffers_[i].start != MAP_FAILED && buffers_[i].start != nullptr) {
-                munmap(buffers_[i].start, buffers_[i].length);
-            }
-        }
-        delete[] buffers_;
-    }
-    if (fd_ != -1) close(fd_);
+namespace {
+int xioctl(int fd,unsigned long request,void* arg) {
+ int r; do {r=ioctl(fd,request,arg);} while(r<0 && errno==EINTR); return r;
 }
-
-bool V4L2Camera::open() {
-    fd_ = ::open(device_.c_str(), O_RDWR);
-    if (fd_ < 0) {
-        std::cerr << "[V4L2] Cannot open " << device_ << std::endl;
-        return false;
-    }
-
-    struct v4l2_capability cap;
-    if (ioctl(fd_, VIDIOC_QUERYCAP, &cap) < 0) {
-        std::cerr << "[V4L2] VIDIOC_QUERYCAP failed" << std::endl;
-        return false;
-    }
-
-    struct v4l2_format fmt;
-    memset(&fmt, 0, sizeof(fmt));
-    fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    fmt.fmt.pix.width = width_;
-    fmt.fmt.pix.height = height_;
-    fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV; // video10 支持 YUYV
-    fmt.fmt.pix.field = V4L2_FIELD_NONE;
-    
-    if (ioctl(fd_, VIDIOC_S_FMT, &fmt) < 0) {
-        std::cerr << "[V4L2] VIDIOC_S_FMT failed: " << strerror(errno) << std::endl;
-        return false;
-    }
-
-    return initMmap();
 }
-
-bool V4L2Camera::initMmap() {
-    struct v4l2_requestbuffers req;
-    memset(&req, 0, sizeof(req));
-    req.count = 4;
-    req.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    req.memory = V4L2_MEMORY_MMAP;
-
-    if (ioctl(fd_, VIDIOC_REQBUFS, &req) < 0) {
-        std::cerr << "[V4L2] VIDIOC_REQBUFS failed" << std::endl;
-        return false;
-    }
-
-    buffers_ = new buffer[req.count];
-    n_buffers_ = req.count;
-
-    for (int i = 0; i < n_buffers_; ++i) {
-        struct v4l2_buffer buf;
-        memset(&buf, 0, sizeof(buf));
-        buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-        buf.memory = V4L2_MEMORY_MMAP;
-        buf.index = i;
-
-        if (ioctl(fd_, VIDIOC_QUERYBUF, &buf) < 0) {
-            std::cerr << "[V4L2] VIDIOC_QUERYBUF failed" << std::endl;
-            return false;
-        }
-
-        buffers_[i].length = buf.length;
-        buffers_[i].start = mmap(NULL, buf.length, PROT_READ | PROT_WRITE, MAP_SHARED, fd_, buf.m.offset);
-
-        if (buffers_[i].start == MAP_FAILED) {
-            std::cerr << "[V4L2] mmap failed" << std::endl;
-            return false;
-        }
-    }
-    return true;
+V4L2Camera::V4L2Camera(std::string device,int w,int h,int fps):
+ device_(std::move(device)),width_(w),height_(h),fps_(fps) {}
+V4L2Camera::~V4L2Camera(){close();}
+bool V4L2Camera::fail(const std::string& text){error_=text+": "+std::strerror(errno);return false;}
+bool V4L2Camera::open(){
+ close();
+ fd_=::open(device_.c_str(),O_RDWR|O_NONBLOCK|O_CLOEXEC);
+ if(fd_<0) return fail("open camera");
+ v4l2_capability cap{};
+ if(xioctl(fd_,VIDIOC_QUERYCAP,&cap)<0) return fail("QUERYCAP");
+ auto caps=(cap.capabilities&V4L2_CAP_DEVICE_CAPS)?cap.device_caps:cap.capabilities;
+ if(!(caps&V4L2_CAP_VIDEO_CAPTURE) || !(caps&V4L2_CAP_STREAMING)){
+  error_="camera requires single-planar capture + streaming";return false;
+ }
+ v4l2_format fmt{}; fmt.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+ fmt.fmt.pix.width=width_;fmt.fmt.pix.height=height_;
+ fmt.fmt.pix.pixelformat=V4L2_PIX_FMT_YUYV;fmt.fmt.pix.field=V4L2_FIELD_NONE;
+ if(xioctl(fd_,VIDIOC_S_FMT,&fmt)<0) return fail("S_FMT");
+ if(fmt.fmt.pix.width!=unsigned(width_) || fmt.fmt.pix.height!=unsigned(height_) ||
+    fmt.fmt.pix.pixelformat!=V4L2_PIX_FMT_YUYV){
+  error_="camera changed requested size/format; use a supported YUYV mode";return false;
+ }
+ stride_=fmt.fmt.pix.bytesperline;
+ if(stride_<size_t(width_)*2){error_="invalid camera stride";return false;}
+ v4l2_streamparm parm{};parm.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+ parm.parm.capture.timeperframe.numerator=1;parm.parm.capture.timeperframe.denominator=fps_;
+ if(xioctl(fd_,VIDIOC_S_PARM,&parm)<0) return fail("S_PARM");
+ if(parm.parm.capture.timeperframe.numerator)
+  fps_=parm.parm.capture.timeperframe.denominator/parm.parm.capture.timeperframe.numerator;
+ v4l2_requestbuffers req{};req.count=4;req.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;req.memory=V4L2_MEMORY_MMAP;
+ if(xioctl(fd_,VIDIOC_REQBUFS,&req)<0) return fail("REQBUFS");
+ if(req.count<2){error_="insufficient camera buffers";return false;}
+ buffers_.resize(req.count);
+ for(unsigned i=0;i<req.count;++i){
+  v4l2_buffer b{};b.type=req.type;b.memory=req.memory;b.index=i;
+  if(xioctl(fd_,VIDIOC_QUERYBUF,&b)<0) return fail("QUERYBUF");
+  auto ptr=mmap(nullptr,b.length,PROT_READ|PROT_WRITE,MAP_SHARED,fd_,b.m.offset);
+  if(ptr==MAP_FAILED) return fail("mmap");
+  buffers_[i]={ptr,b.length};
+ }
+ error_.clear();return true;
 }
-
-bool V4L2Camera::start() {
-    for (int i = 0; i < n_buffers_; ++i) {
-        struct v4l2_buffer buf;
-        memset(&buf, 0, sizeof(buf));
-        buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-        buf.memory = V4L2_MEMORY_MMAP;
-        buf.index = i;
-        
-        if (ioctl(fd_, VIDIOC_QBUF, &buf) < 0) {
-            std::cerr << "[V4L2] VIDIOC_QBUF failed: " << strerror(errno) << std::endl;
-            return false;
-        }
-    }
-    
-    enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    if (ioctl(fd_, VIDIOC_STREAMON, &type) < 0) {
-        std::cerr << "[V4L2] VIDIOC_STREAMON failed: " << strerror(errno) << std::endl;
-        return false;
-    }
-    return true;
+bool V4L2Camera::start(){
+ for(unsigned i=0;i<buffers_.size();++i){
+  v4l2_buffer b{};b.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;b.memory=V4L2_MEMORY_MMAP;b.index=i;
+  if(xioctl(fd_,VIDIOC_QBUF,&b)<0)return fail("QBUF");
+ }
+ v4l2_buf_type type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+ if(xioctl(fd_,VIDIOC_STREAMON,&type)<0)return fail("STREAMON");
+ streaming_=true;return true;
 }
-
-bool V4L2Camera::stop() {
-    if (fd_ != -1) {
-        enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-        ioctl(fd_, VIDIOC_STREAMOFF, &type);
-    }
-    return true;
+void V4L2Camera::stop(){
+ if(streaming_){v4l2_buf_type type=V4L2_BUF_TYPE_VIDEO_CAPTURE;xioctl(fd_,VIDIOC_STREAMOFF,&type);}
+ streaming_=false;
 }
-
-bool V4L2Camera::getFrame(unsigned char** buffer, int& size) {
-    struct v4l2_buffer buf;
-    memset(&buf, 0, sizeof(buf));
-    buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    buf.memory = V4L2_MEMORY_MMAP;
-
-    if (ioctl(fd_, VIDIOC_DQBUF, &buf) < 0) {
-        return false;
-    }
-
-    current_buf_index_ = buf.index;
-    *buffer = (unsigned char*)buffers_[buf.index].start;
-    size = buf.bytesused;
-    return true;
+void V4L2Camera::close(){
+ stop();
+ for(auto& b:buffers_) if(b.data) munmap(b.data,b.size);
+ buffers_.clear();if(fd_>=0)::close(fd_);fd_=-1;
 }
-
-void V4L2Camera::releaseFrame() {
-    if (current_buf_index_ != -1) {
-        struct v4l2_buffer buf;
-        memset(&buf, 0, sizeof(buf));
-        buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-        buf.memory = V4L2_MEMORY_MMAP;
-        buf.index = current_buf_index_;
-        ioctl(fd_, VIDIOC_QBUF, &buf);
-        current_buf_index_ = -1;
-    }
+V4L2Camera::Result V4L2Camera::copyFrame(uint8_t* dst,size_t capacity,int timeout){
+ pollfd p{fd_,POLLIN,0};int ready=poll(&p,1,timeout);
+ if(ready==0 || (ready<0 && errno==EINTR))return Result::Timeout;
+ if(ready<0 || (p.revents&(POLLERR|POLLHUP|POLLNVAL))){fail("camera poll");return Result::Error;}
+ v4l2_buffer b{};b.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;b.memory=V4L2_MEMORY_MMAP;
+ if(xioctl(fd_,VIDIOC_DQBUF,&b)<0){
+  if(errno==EAGAIN)return Result::Timeout;
+  fail("DQBUF");return Result::Error;
+ }
+ bool valid=b.index<buffers_.size() && !(b.flags&V4L2_BUF_FLAG_ERROR);
+ size_t needed=stride_*(height_-1)+size_t(width_)*2;
+ valid=valid && b.bytesused>=needed && b.bytesused<=buffers_[b.index].size &&
+       capacity>=size_t(width_)*height_*2;
+ if(valid){
+  auto src=static_cast<uint8_t*>(buffers_[b.index].data);
+  for(int row=0;row<height_;++row)
+   std::memcpy(dst+size_t(row)*width_*2,src+size_t(row)*stride_,width_*2);
+ }
+ if(xioctl(fd_,VIDIOC_QBUF,&b)<0){fail("return camera buffer");return Result::Error;}
+ if(!valid){error_="invalid or truncated camera frame";return Result::Error;}
+ return Result::Frame;
 }

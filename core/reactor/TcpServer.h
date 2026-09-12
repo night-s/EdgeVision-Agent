@@ -1,346 +1,111 @@
-#ifndef TCP_SERVER_H
-#define TCP_SERVER_H
-
+#pragma once
 #include "EventLoop.h"
-
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
 #include <unistd.h>
-#include <fcntl.h>
-#include <string>
 #include <unordered_map>
+#include <string>
 #include <functional>
-#include <iostream>
-#include <cstring>
 #include <cerrno>
-
-/**
- * TcpServer — Reactor 驱动的非阻塞 TCP 服务
- *
- * 设计要点：
- *  - 非阻塞 listen socket (SOCK_NONBLOCK)
- *  - Level-triggered epoll 模式
- *  - 新行分隔 (\n) 的 JSON RPC 消息协议
- *  - 写缓冲 + EPOLLOUT 驱动发送
- *  - 每个连接独立读写缓冲
- */
+#include <stdexcept>
 class TcpServer {
 public:
-    using MessageCallback    = std::function<void(int client_fd, const std::string& msg)>;
-    using ConnectionCallback = std::function<void(int client_fd)>;
-    using CloseCallback      = std::function<void(int client_fd)>;
-
-    static constexpr size_t kReadBufSize = 8192;
-
-    explicit TcpServer(EventLoop& loop)
-        : loop_(loop)
-        , listen_fd_(-1)
-        , started_(false)
-    {}
-
-    ~TcpServer() {
-        if (started_) stop();
-    }
-
-    TcpServer(const TcpServer&) = delete;
-    TcpServer& operator=(const TcpServer&) = delete;
-
-    // ========== 生命周期 ==========
-
-    /// 启动监听, 注册到 EventLoop
-    bool start(uint16_t port) {
-        if (started_) return true;
-
-        // 创建非阻塞 listen socket
-        listen_fd_ = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
-        if (listen_fd_ < 0) {
-            std::cerr << "[TcpServer] socket() failed: " << std::strerror(errno) << std::endl;
-            return false;
-        }
-
-        int opt = 1;
-        if (::setsockopt(listen_fd_, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
-            std::cerr << "[TcpServer] setsockopt(REUSEADDR) failed: " << std::strerror(errno) << std::endl;
-            ::close(listen_fd_);
-            return false;
-        }
-
-        struct sockaddr_in addr;
-        std::memset(&addr, 0, sizeof(addr));
-        addr.sin_family      = AF_INET;
-        addr.sin_addr.s_addr = INADDR_ANY;
-        addr.sin_port        = htons(port);
-
-        if (::bind(listen_fd_, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
-            std::cerr << "[TcpServer] bind() port " << port << " failed: "
-                      << std::strerror(errno) << std::endl;
-            ::close(listen_fd_);
-            return false;
-        }
-
-        if (::listen(listen_fd_, SOMAXCONN) < 0) {
-            std::cerr << "[TcpServer] listen() failed: " << std::strerror(errno) << std::endl;
-            ::close(listen_fd_);
-            return false;
-        }
-
-        // 注册 listen_fd 到 EventLoop
-        if (!loop_.addFd(listen_fd_, EPOLLIN,
-                         [this](uint32_t revents) { onAccept(revents); }))
-        {
-            ::close(listen_fd_);
-            return false;
-        }
-
-        started_ = true;
-        std::cout << "[TcpServer] Listening on port " << port << std::endl;
-        return true;
-    }
-
-    /// 停止服务：关闭所有连接，注销 listen fd
-    void stop() {
-        if (!started_) return;
-        started_ = false;
-
-        // 注销并关闭所有客户端连接
-        auto conns = std::move(connections_);
-        for (auto& [fd, _] : conns) {
-            loop_.removeFd(fd);
-            ::close(fd);
-        }
-
-        // 注销并关闭 listen fd
-        loop_.removeFd(listen_fd_);
-        ::close(listen_fd_);
-        listen_fd_ = -1;
-    }
-
-    /// 当前已连接数
-    size_t connectionCount() const { return connections_.size(); }
-
-    // ========== 回调注册 ==========
-
-    void setMessageCallback(MessageCallback cb)    { message_cb_ = std::move(cb); }
-    void setConnectionCallback(ConnectionCallback cb) { conn_cb_ = std::move(cb); }
-    void setCloseCallback(CloseCallback cb)        { close_cb_ = std::move(cb); }
-
-    // ========== 发送 ==========
-
-    /// 向指定客户端发送响应（写缓冲 + EPOLLOUT 驱动）
-    bool sendResponse(int client_fd, const std::string& response) {
-        auto it = connections_.find(client_fd);
-        if (it == connections_.end()) return false;
-
-        auto& conn = it->second;
-
-        if (!conn.write_buf.empty()) {
-            // 已有待发送数据，追加到缓冲区
-            conn.write_buf.append(response);
-            return true;
-        }
-
-        // 尝试直接发送
-        ssize_t n = ::write(client_fd, response.data(), response.size());
-        if (n < 0) {
-            if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                // 缓冲区满，全部缓冲
-                conn.write_buf = response;
-                enableWrite(client_fd);
-                return true;
-            }
-            // 连接错误
-            onClose(client_fd);
-            return false;
-        }
-
-        if (static_cast<size_t>(n) < response.size()) {
-            // 部分发送，缓冲剩余部分
-            conn.write_buf = response.substr(n);
-            enableWrite(client_fd);
-        }
-
-        return true;
-    }
-
-    /// 向所有已连接的客户端广播消息
-    void broadcast(const std::string& response) {
-        for (auto& [fd, _] : connections_) {
-            sendResponse(fd, response);
-        }
-    }
-
+ using ConnectionId=uint64_t;
+ using MessageCallback=std::function<void(ConnectionId,const std::string&)>;
+ explicit TcpServer(EventLoop& loop):loop_(loop){}
+ ~TcpServer(){stop();}
+ TcpServer(const TcpServer&)=delete;
+ TcpServer& operator=(const TcpServer&)=delete;
+ void setMessageCallback(MessageCallback cb){message_=std::move(cb);}
+ bool start(uint16_t port){
+  listen_=socket(AF_INET,SOCK_STREAM|SOCK_NONBLOCK|SOCK_CLOEXEC,0);
+  if(listen_<0)return false;
+  int one=1;setsockopt(listen_,SOL_SOCKET,SO_REUSEADDR,&one,sizeof(one));
+  sockaddr_in addr{};addr.sin_family=AF_INET;addr.sin_addr.s_addr=INADDR_ANY;addr.sin_port=htons(port);
+  if(bind(listen_,reinterpret_cast<sockaddr*>(&addr),sizeof(addr))<0 || listen(listen_,16)<0){
+   ::close(listen_);listen_=-1;return false;
+  }
+  return loop_.addFd(listen_,EPOLLIN,[this](uint32_t){acceptClients();});
+ }
+ void stop(){
+  while(!clients_.empty())closeClient(clients_.begin()->first);
+  if(listen_>=0){loop_.removeFd(listen_);::close(listen_);listen_=-1;}
+ }
+ size_t connectionCount() const{return clients_.size();}
+ void retain(ConnectionId id){
+  auto it=ids_.find(id);if(it!=ids_.end())++clients_.at(it->second).pending;
+ }
+ void release(ConnectionId id){
+  auto it=ids_.find(id);if(it==ids_.end())return;
+  auto& c=clients_.at(it->second);if(c.pending)--c.pending;flush(it->second);
+ }
+ bool sendResponse(ConnectionId id,const std::string& data){
+  auto found=ids_.find(id);if(found==ids_.end())return false;
+  int fd=found->second;auto& c=clients_.at(fd);
+  if(c.out.size()+data.size()>65536){closeClient(fd);return false;}
+  c.out+=data;flush(fd);return ids_.count(id)>0;
+ }
 private:
-    struct TcpConnection {
-        std::string read_buf;   // 接收缓冲区
-        std::string write_buf;  // 发送缓冲区
-    };
-
-    // ========== 连接管理 ==========
-
-    /// 接受新连接
-    void onAccept(uint32_t revents) {
-        if (revents & (EPOLLERR | EPOLLHUP)) {
-            std::cerr << "[TcpServer] listen fd error" << std::endl;
-            return;
-        }
-
-        while (true) {
-            struct sockaddr_in client_addr;
-            socklen_t addr_len = sizeof(client_addr);
-
-            int client_fd = ::accept4(listen_fd_, (struct sockaddr*)&client_addr,
-                                      &addr_len, SOCK_NONBLOCK);
-            if (client_fd < 0) {
-                if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                    break;  // 所有待处理连接已接受完毕
-                }
-                if (errno == EINTR) continue;
-                std::cerr << "[TcpServer] accept4() failed: "
-                          << std::strerror(errno) << std::endl;
-                break;
-            }
-
-            // 注册客户端 fd 到 EventLoop
-            connections_[client_fd] = TcpConnection{};
-
-            if (!loop_.addFd(client_fd, EPOLLIN | EPOLLRDHUP,
-                             [this, client_fd](uint32_t revents) {
-                                 onClientEvent(client_fd, revents);
-                             }))
-            {
-                // 注册失败，关闭连接
-                connections_.erase(client_fd);
-                ::close(client_fd);
-                continue;
-            }
-
-            // 连接建立回调
-            if (conn_cb_) {
-                conn_cb_(client_fd);
-            }
-        }
-    }
-
-    /// 客户端 fd 事件分发
-    void onClientEvent(int client_fd, uint32_t revents) {
-        if (revents & (EPOLLRDHUP | EPOLLHUP | EPOLLERR)) {
-            onClose(client_fd);
-            return;
-        }
-
-        if (revents & EPOLLIN) {
-            onReadable(client_fd);
-        }
-
-        if (revents & EPOLLOUT) {
-            onWritable(client_fd);
-        }
-    }
-
-    /// 可读事件处理
-    void onReadable(int client_fd) {
-        auto it = connections_.find(client_fd);
-        if (it == connections_.end()) return;
-
-        auto& conn = it->second;
-        char buf[kReadBufSize];
-
-        while (true) {
-            ssize_t n = ::read(client_fd, buf, sizeof(buf));
-            if (n > 0) {
-                conn.read_buf.append(buf, static_cast<size_t>(n));
-            } else if (n == 0) {
-                // 对端关闭连接
-                onClose(client_fd);
-                return;
-            } else {
-                if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                    break;  // 数据已读完
-                }
-                // 读错误
-                onClose(client_fd);
-                return;
-            }
-        }
-
-        // 提取完整的新行分隔消息
-        while (true) {
-            auto pos = conn.read_buf.find('\n');
-            if (pos == std::string::npos) break;
-
-            std::string msg = conn.read_buf.substr(0, pos);
-            conn.read_buf.erase(0, pos + 1);
-
-            // 去掉末尾空白
-            while (!msg.empty() && (msg.back() == '\r' || msg.back() == ' ' || msg.back() == '\t')) {
-                msg.pop_back();
-            }
-
-            if (!msg.empty() && message_cb_) {
-                message_cb_(client_fd, msg);
-            }
-        }
-    }
-
-    /// 可写事件处理 — 发送写缓冲中的数据
-    void onWritable(int client_fd) {
-        auto it = connections_.find(client_fd);
-        if (it == connections_.end()) return;
-
-        auto& conn = it->second;
-        if (conn.write_buf.empty()) return;
-
-        ssize_t n = ::write(client_fd, conn.write_buf.data(), conn.write_buf.size());
-        if (n < 0) {
-            if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                return;  // 下次再发
-            }
-            onClose(client_fd);
-            return;
-        }
-
-        if (static_cast<size_t>(n) < conn.write_buf.size()) {
-            conn.write_buf.erase(0, static_cast<size_t>(n));
-        } else {
-            conn.write_buf.clear();
-            // 数据全部发送完毕，注销 EPOLLOUT 事件
-            disableWrite(client_fd);
-        }
-    }
-
-    /// 关闭连接
-    void onClose(int client_fd) {
-        loop_.removeFd(client_fd);
-        ::close(client_fd);
-        connections_.erase(client_fd);
-
-        if (close_cb_) {
-            close_cb_(client_fd);
-        }
-    }
-
-    // ========== 辅助 ==========
-
-    void enableWrite(int fd) {
-        auto it = loop_.updateFd(fd, EPOLLIN | EPOLLRDHUP | EPOLLOUT);
-        (void)it;  // 忽略返回值
-    }
-
-    void disableWrite(int fd) {
-        auto it = loop_.updateFd(fd, EPOLLIN | EPOLLRDHUP);
-        (void)it;
-    }
-
-    EventLoop& loop_;
-    int listen_fd_;
-    bool started_;
-
-    std::unordered_map<int, TcpConnection> connections_;
-
-    MessageCallback    message_cb_;
-    ConnectionCallback conn_cb_;
-    CloseCallback      close_cb_;
+ struct Client {ConnectionId id;std::string in,out;bool eof=false,reading=false;unsigned pending=0;};
+ EventLoop& loop_;int listen_=-1;ConnectionId next_=1;
+ std::unordered_map<int,Client> clients_;
+ std::unordered_map<ConnectionId,int> ids_;
+ MessageCallback message_;
+ void closeClient(int fd){
+  auto it=clients_.find(fd);if(it==clients_.end())return;
+  ids_.erase(it->second.id);loop_.removeFd(fd);::close(fd);clients_.erase(it);
+ }
+ void acceptClients(){
+  for(int i=0;i<32;++i){
+   int fd=accept4(listen_,nullptr,nullptr,SOCK_NONBLOCK|SOCK_CLOEXEC);
+   if(fd<0){if(errno==EINTR)continue;break;}
+   if(clients_.size()>=16){::close(fd);continue;}
+   auto id=next_++;clients_.emplace(fd,Client{id,{},{},false});ids_[id]=fd;
+   if(!loop_.addFd(fd,EPOLLIN|EPOLLRDHUP,[this,fd](uint32_t events){
+    if(events&EPOLLERR){closeClient(fd);return;}
+    if(events&(EPOLLIN|EPOLLRDHUP|EPOLLHUP))readClient(fd);
+    if(events&EPOLLOUT)flush(fd);
+   }))closeClient(fd);
+  }
+ }
+ void flush(int fd){
+  auto it=clients_.find(fd);if(it==clients_.end())return;
+  auto& c=it->second;
+  if(!c.out.empty()){
+   ssize_t n=send(fd,c.out.data(),c.out.size(),MSG_NOSIGNAL);
+   if(n>0)c.out.erase(0,size_t(n));
+   else if(n<0 && errno!=EAGAIN && errno!=EWOULDBLOCK && errno!=EINTR){closeClient(fd);return;}
+  }
+  if(c.eof && !c.reading && c.pending==0 && c.out.empty()){closeClient(fd);return;}
+  loop_.updateFd(fd,(c.eof?0u:uint32_t(EPOLLIN|EPOLLRDHUP))|(c.out.empty()?0u:uint32_t(EPOLLOUT)));
+ }
+ void readClient(int fd){
+  auto it=clients_.find(fd);if(it==clients_.end())return;
+  it->second.reading=true;
+  char buf[4096];
+  for(int i=0;i<4;++i){
+   ssize_t n=recv(fd,buf,sizeof(buf),0);
+   if(n>0){
+    it->second.in.append(buf,size_t(n));
+    if(it->second.in.size()>65536){closeClient(fd);return;}
+   }else if(n==0){it->second.eof=true;break;}
+   else {
+    if(errno==EINTR)continue;
+    if(errno!=EAGAIN && errno!=EWOULDBLOCK){closeClient(fd);return;}break;
+   }
+  }
+  // Re-acquire after callbacks: a send failure may erase the connection.
+  while((it=clients_.find(fd))!=clients_.end()){
+   auto pos=it->second.in.find('\n');
+   if(pos==std::string::npos){
+    if(it->second.in.size()>8192){closeClient(fd);return;}break;
+   }
+   if(pos>8192){closeClient(fd);return;}
+   auto line=it->second.in.substr(0,pos);it->second.in.erase(0,pos+1);
+   auto id=it->second.id;
+   if(message_ && !line.empty())message_(id,line);
+  }
+  it=clients_.find(fd);if(it!=clients_.end())it->second.reading=false;
+  flush(fd);
+ }
 };
-
-#endif // TCP_SERVER_H

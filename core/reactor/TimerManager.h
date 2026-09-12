@@ -6,6 +6,7 @@
 #include <chrono>
 #include <functional>
 #include <vector>
+#include <unordered_set>
 #include <algorithm>
 #include <iostream>
 #include <cstring>
@@ -15,7 +16,7 @@
  * TimerManager — 基于 timerfd + 最小堆的软实时定时器管理
  *
  * 设计要点：
- *  - timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK) 内核定时器 fd
+ *  - timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC) 内核定时器 fd
  *  - std::vector 最小堆，按到期时间排序 (std::push_heap / pop_heap)
  *  - O(log n) addTimer, O(n) cancelTimer (惰性删除)
  *  - 非线程安全 —— 所有操作必须在 EventLoop 线程内完成
@@ -25,7 +26,7 @@ public:
     using TimerCallback = std::function<void()>;
 
     TimerManager()
-        : timerfd_(::timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK))
+        : timerfd_(::timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC))
         , next_id_(1)
     {
         if (timerfd_ < 0) {
@@ -53,6 +54,7 @@ public:
         auto expiry = now + std::chrono::milliseconds(delay_ms);
 
         TimerEntry entry{next_id_++, expiry, period_ms, std::move(cb), true};
+        active_ids_.insert(entry.id);
         heap_.push_back(std::move(entry));
         std::push_heap(heap_.begin(), heap_.end(), TimerComparer{});
 
@@ -66,13 +68,9 @@ public:
 
     /// 取消定时器（惰性删除，标记 active = false）
     bool cancelTimer(uint64_t id) {
-        for (auto& e : heap_) {
-            if (e.id == id && e.active) {
-                e.active = false;
-                return true;
-            }
-        }
-        return false;
+        if (!active_ids_.erase(id)) return false;
+        for (auto& e : heap_) if (e.id == id) e.active = false;
+        return true;
     }
 
     /// 获取 timerfd（用于 EventLoop 注册到 epoll）
@@ -100,18 +98,19 @@ public:
             TimerEntry entry = std::move(heap_.back());
             heap_.pop_back();
 
-            if (entry.active) {
+            if (entry.active && active_ids_.count(entry.id)) {
                 // 执行回调
                 if (entry.callback) {
                     entry.callback();
                 }
 
                 // 重复定时器：计算下次到期时间，重新入堆
-                if (entry.period_ms > 0) {
-                    entry.expiry = now + std::chrono::milliseconds(entry.period_ms);
-                    heap_.push_back(std::move(entry));
+                if (entry.period_ms > 0 && active_ids_.count(entry.id)) {
+                    entry.expiry = std::chrono::steady_clock::now() + std::chrono::milliseconds(entry.period_ms);
+                    active_ids_.insert(entry.id);
+        heap_.push_back(std::move(entry));
                     std::push_heap(heap_.begin(), heap_.end(), TimerComparer{});
-                }
+                } else active_ids_.erase(entry.id);
             }
             // 惰性删除：active == false 直接丢弃
         }
@@ -153,6 +152,7 @@ private:
                     top.expiry - now);
                 its.it_value.tv_sec  = duration.count() / 1000;
                 its.it_value.tv_nsec = (duration.count() % 1000) * 1000000;
+                if (its.it_value.tv_sec == 0 && its.it_value.tv_nsec == 0) its.it_value.tv_nsec = 1;
             } else {
                 // 已经到期了，立即触发
                 its.it_value.tv_sec  = 0;
@@ -170,6 +170,7 @@ private:
     int timerfd_;
     std::vector<TimerEntry> heap_;
     uint64_t next_id_;
+    std::unordered_set<uint64_t> active_ids_;
 };
 
 #endif // TIMER_MANAGER_H

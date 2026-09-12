@@ -1,36 +1,26 @@
-#ifndef V4L2_CAMERA_H
-#define V4L2_CAMERA_H
-
+#pragma once
 #include <string>
-#include <linux/videodev2.h>
-
+#include <vector>
+#include <cstdint>
 class V4L2Camera {
 public:
-    V4L2Camera(const std::string& device = "/dev/video0", int width = 640, int height = 480);
-    ~V4L2Camera();
-
-    bool open();        // 打开设备并初始化MMAP
-    bool start();       // 开启流
-    bool stop();        // 停止流
-    bool getFrame(unsigned char** buffer, int& size); // 获取一帧数据 (零拷贝)
-    void releaseFrame(); // 释放帧缓冲区，还给内核
-
+ enum class Result { Frame, Timeout, Error };
+ V4L2Camera(std::string device,int width,int height,int fps=30);
+ ~V4L2Camera();
+ V4L2Camera(const V4L2Camera&)=delete;
+ V4L2Camera& operator=(const V4L2Camera&)=delete;
+ bool open();
+ bool start();
+ void close();
+ void stop();
+ Result copyFrame(uint8_t* dst,size_t capacity,int timeout_ms=200);
+ const std::string& error() const { return error_; }
+ int fps() const { return fps_; }
 private:
-    bool initMmap();
-
-    std::string device_;
-    int width_;
-    int height_;
-    int fd_;
-    
-    // MMAP 缓冲区结构
-    struct buffer {
-        void* start;
-        size_t length;
-    } *buffers_;
-    
-    int n_buffers_;
-    int current_buf_index_;
+ bool fail(const std::string& text);
+ struct Buffer { void* data=nullptr; size_t size=0; };
+ std::string device_,error_;
+ int width_,height_,fps_,fd_=-1;
+ size_t stride_=0; bool streaming_=false;
+ std::vector<Buffer> buffers_;
 };
-
-#endif // V4L2_CAMERA_H

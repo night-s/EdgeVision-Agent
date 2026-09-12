@@ -1,100 +1,63 @@
 #include "RKNNEngine.h"
-#include <iostream>
 #include <fstream>
-#include <vector>
+#include <iostream>
 #include <chrono>
-
-RKNNEngine::RKNNEngine() : initialized_(false), letterbox_pad_(0) {}
-
-RKNNEngine::~RKNNEngine() {
-    if (initialized_) {
-        rknn_destroy(ctx_);
-    }
+#include <cstring>
+namespace {
+using Clock=std::chrono::steady_clock;
+double ms(Clock::time_point a,Clock::time_point b){return std::chrono::duration<double,std::milli>(b-a).count();}
+void check(int code,const char* operation){if(code<0)throw std::runtime_error(std::string(operation)+": "+std::to_string(code));}
 }
-
-bool RKNNEngine::loadModel(const std::string& modelPath) {
-    // 1. 读取模型文件
-    std::ifstream file(modelPath, std::ios::binary | std::ios::ate);
-    if (!file.is_open()) {
-        std::cerr << "[RKNN] Failed to open model file: " << modelPath << std::endl;
-        return false;
-    }
-    size_t modelSize = file.tellg();
-    file.seekg(0, std::ios::beg);
-    std::vector<char> modelData(modelSize);
-    file.read(modelData.data(), modelSize);
-    file.close();
-
-    // 2. 初始化 RKNN
-    int ret = rknn_init(&ctx_, modelData.data(), modelSize, 0, nullptr);
-    if (ret < 0) {
-        std::cerr << "[RKNN] rknn_init failed! ret=" << ret << std::endl;
-        return false;
-    }
-
-    // 3. 查询输入输出节点数量
-    ret = rknn_query(ctx_, RKNN_QUERY_IN_OUT_NUM, &io_num_, sizeof(io_num_));
-    if (ret < 0) {
-        std::cerr << "[RKNN] rknn_query failed! ret=" << ret << std::endl;
-        return false;
-    }
-
-    std::cout << "[RKNN] Model loaded. Input num: " << io_num_.n_input 
-              << ", Output num: " << io_num_.n_output << std::endl;
-              
-    initialized_ = true;
-    return true;
+RKNNEngine::~RKNNEngine(){if(initialized_)rknn_destroy(ctx_);}
+void RKNNEngine::loadModel(const std::string& path){
+ if(initialized_)throw std::runtime_error("model already loaded");
+ std::ifstream in(path,std::ios::binary|std::ios::ate);
+ if(!in)throw std::runtime_error("cannot read model: "+path);
+ auto size=in.tellg();
+ if(size<=0 || size>256*1024*1024)throw std::runtime_error("invalid model size");
+ std::vector<char> bytes(static_cast<size_t>(size));in.seekg(0);
+ if(!in.read(bytes.data(),size))throw std::runtime_error("truncated model");
+ check(rknn_init(&ctx_,bytes.data(),bytes.size(),0,nullptr),"rknn_init");
+ initialized_=true;
+ rknn_input_output_num io{};
+ check(rknn_query(ctx_,RKNN_QUERY_IN_OUT_NUM,&io,sizeof(io)),"query IO");
+ if(io.n_input!=1 || io.n_output!=3)throw std::runtime_error("requires YOLOv5 1 input/3 raw heads");
+ rknn_tensor_attr input{};input.index=0;
+ check(rknn_query(ctx_,RKNN_QUERY_INPUT_ATTR,&input,sizeof(input)),"query input");
+ bool input_shape=input.n_dims==4 &&
+  ((input.fmt==RKNN_TENSOR_NHWC && input.dims[1]==640 && input.dims[2]==640 && input.dims[3]==3) ||
+   (input.fmt==RKNN_TENSOR_NCHW && input.dims[1]==3 && input.dims[2]==640 && input.dims[3]==640));
+ if(!input_shape)throw std::runtime_error("requires 640x640 RGB input");
+ for(int i=0;i<3;++i){
+  auto& a=attrs_[i];a.index=i;
+  check(rknn_query(ctx_,RKNN_QUERY_OUTPUT_ATTR,&a,sizeof(a)),"query output");
+  std::cout<<"[model] output "<<i<<" fmt="<<a.fmt<<" type="<<a.type<<" dims=";
+  for(unsigned d=0;d<a.n_dims;++d)std::cout<<a.dims[d]<<",";
+  std::cout<<" scale="<<a.scale<<" zp="<<a.zp<<std::endl;
+  int grid=80>>i;
+  if(a.n_dims!=4 || a.dims[0]!=1 || a.dims[1]!=255 ||
+     a.dims[2]!=unsigned(grid) || a.dims[3]!=unsigned(grid) || a.fmt!=RKNN_TENSOR_NCHW)
+   throw std::runtime_error("unsupported output layout; expected [1,255,H,W] heads at 80/40/20");
+ }
 }
-
-// 修改函数签名
-float RKNNEngine::infer(const cv::Mat& input, rknn_output* outputs) {
-    if (!initialized_) return -1.0f;
-
-    // 1. 预处理: Letterbox 填充
-    cv::Mat resized;
-    float scale = std::min(640.0f / input.cols, 640.0f / input.rows);
-    int new_w = input.cols * scale;
-    int new_h = input.rows * scale;
-    cv::resize(input, resized, cv::Size(new_w, new_h));
-    
-    int top = (640 - new_h) / 2;
-    int bottom = 640 - new_h - top;
-    int left = (640 - new_w) / 2;
-    int right = 640 - new_w - left;
-    letterbox_pad_ = left;
-    
-    cv::copyMakeBorder(resized, resized, top, bottom, left, right, cv::BORDER_CONSTANT, cv::Scalar(114, 114, 114));
-    cv::Mat rgb;
-    cv::cvtColor(resized, rgb, cv::COLOR_BGR2RGB);
-
-    // 2. 设置输入
-    rknn_input inputs[1];
-    memset(inputs, 0, sizeof(inputs));
-    inputs[0].index = 0;
-    inputs[0].type = RKNN_TENSOR_UINT8;
-    inputs[0].size = 640 * 640 * 3;
-    inputs[0].fmt = RKNN_TENSOR_NHWC;
-    inputs[0].buf = rgb.data;
-    inputs[0].pass_through = 0;
-
-    int ret = rknn_inputs_set(ctx_, 1, inputs);
-    if (ret < 0) return -1.0f;
-
-    // 3. 执行推理并计时
-    auto start = std::chrono::high_resolution_clock::now();
-    ret = rknn_run(ctx_, nullptr);
-    auto end = std::chrono::high_resolution_clock::now();
-    
-    if (ret < 0) return -1.0f;
-
-    // 4. 获取输出 (注意：这里不再释放，由调用者释放)
-    memset(outputs, 0, sizeof(rknn_output) * io_num_.n_output);
-    for (int i = 0; i < io_num_.n_output; ++i) {
-        outputs[i].index = i;
-        outputs[i].want_float = 1;  //直接获取浮点数，省去手动反量化
-    }
-    ret = rknn_outputs_get(ctx_, io_num_.n_output, outputs, nullptr);
-    if (ret < 0) return -1.0f;
-
-    return std::chrono::duration<float, std::milli>(end - start).count();
+InferenceResult RKNNEngine::infer(const cv::Mat& rgb,const Letterbox& box,float threshold,float nms,bool logits,bool native_outputs){
+ if(!initialized_ || rgb.type()!=CV_8UC3 || rgb.rows!=640 || rgb.cols!=640 || !rgb.isContinuous())
+  throw std::runtime_error("invalid RKNN input");
+ rknn_input input{};input.index=0;input.type=RKNN_TENSOR_UINT8;input.fmt=RKNN_TENSOR_NHWC;
+ input.size=640*640*3;input.buf=rgb.data;
+ auto t0=Clock::now();check(rknn_inputs_set(ctx_,1,&input),"inputs_set");
+ auto t1=Clock::now();check(rknn_run(ctx_,nullptr),"rknn_run");
+ auto t2=Clock::now();
+ std::array<rknn_output,3> outputs{};
+ bool quantized=native_outputs;
+ for(const auto& a:attrs_)
+  quantized=quantized && (a.type==RKNN_TENSOR_INT8 || a.type==RKNN_TENSOR_UINT8) &&
+            a.qnt_type==RKNN_TENSOR_QNT_AFFINE_ASYMMETRIC;
+ for(unsigned i=0;i<3;++i){outputs[i].index=i;outputs[i].want_float=quantized?0:1;}
+ check(rknn_outputs_get(ctx_,3,outputs.data(),nullptr),"outputs_get");
+ struct Guard{rknn_context ctx;rknn_output* p;~Guard(){rknn_outputs_release(ctx,3,p);}} guard{ctx_,outputs.data()};
+ auto t3=Clock::now();
+ auto detections=Yolov5PostProcess().process(outputs.data(),box,threshold,nms,logits,quantized?attrs_.data():nullptr);
+ auto t4=Clock::now();
+ return {std::move(detections),ms(t0,t1),ms(t1,t2),ms(t2,t3),ms(t3,t4)};
 }

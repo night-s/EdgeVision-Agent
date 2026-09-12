@@ -1,0 +1,38 @@
+{
+  "activation": "logits",
+  "cpu_detections": [
+    {
+      "box": [
+        18,
+        104,
+        572,
+        376
+      ],
+      "class_id": 0,
+      "confidence": 0.5050060153007507
+    }
+  ],
+  "cpu_preprocess_ms": 1.5432557,
+  "float_native_match": true,
+  "float_output_and_post_ms": 20.3798619,
+  "input": "output/model-check/person.yuyv",
+  "native_output_and_post_ms": 6.699826799999999,
+  "probability_mode_error": "YOLO objectness is not a probability; select logits for this export",
+  "rga_available": true,
+  "rga_detections": [
+    {
+      "box": [
+        18,
+        118,
+        572,
+        353
+      ],
+      "class_id": 0,
+      "confidence": 0.5061689615249634
+    }
+  ],
+  "rga_preprocess_ms": 3.2127318999999996,
+  "rga_rgb_max_abs_error": 1.0,
+  "rga_rgb_mean_abs_error": 0.15248046875000001,
+  "samples_after_warmup": 10
+}

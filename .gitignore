@@ -5,3 +5,10 @@ build/
 cloud/__pycache__/
 event_capture.jpg
 result_output.jpg
+
+# Generated builds and measurements
+build-*/
+.deps/
+output/
+**/__pycache__/
+/Testing/

@@ -1,28 +1,50 @@
 cmake_minimum_required(VERSION 3.10)
-project(EdgeVision-Agent)
-
+project(EdgeVisionAgent LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-find_package(OpenCV REQUIRED)
-set(THREADS_PREFER_PTHREAD_FLAG ON)
+option(EDGE_WITH_RGA "Enable Rockchip RGA preprocessing" ON)
+option(EDGE_BUILD_AGENT "Build RK3568 application" ON)
+option(EDGE_SANITIZERS "Address and undefined behavior sanitizers" OFF)
 find_package(Threads REQUIRED)
-
-include_directories(
-    ${CMAKE_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/third_party
-    ${OpenCV_INCLUDE_DIRS}
-)
-
-add_executable(edge_agent 
-    main.cpp
-    hardware/v4l2_camera/V4L2Camera.cpp
-    hardware/rknpu_infer/RKNNEngine.cpp
-)
-
-# 链接 OpenCV, Threads, 以及 RKNN 动态库
-target_link_libraries(edge_agent 
-    ${OpenCV_LIBS}
-    Threads::Threads
-    ${CMAKE_SOURCE_DIR}/lib/librknnrt.so
-)
+find_package(OpenCV REQUIRED COMPONENTS core imgproc imgcodecs)
+include(CTest)
+add_library(edge_options INTERFACE)
+target_include_directories(edge_options INTERFACE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/third_party ${OpenCV_INCLUDE_DIRS})
+target_link_libraries(edge_options INTERFACE Threads::Threads ${OpenCV_LIBS})
+target_compile_options(edge_options INTERFACE -Wall -Wextra -Wpedantic)
+if(EDGE_SANITIZERS)
+ target_compile_options(edge_options INTERFACE -fsanitize=address,undefined -fno-omit-frame-pointer)
+ target_link_libraries(edge_options INTERFACE -fsanitize=address,undefined)
+endif()
+if(EDGE_BUILD_AGENT)
+ find_package(PkgConfig REQUIRED)
+ pkg_check_modules(GST REQUIRED IMPORTED_TARGET gstreamer-1.0)
+ # Standard system development packages, or isolated headers/libs extracted by the setup script.
+ set(EDGE_DEPS "${CMAKE_SOURCE_DIR}/.deps/usr" CACHE PATH "Optional project-local multimedia dependencies")
+ find_path(GST_APP_INCLUDE gst/app/gstappsrc.h HINTS ${EDGE_DEPS}/include/gstreamer-1.0 /usr/include/gstreamer-1.0 REQUIRED)
+ find_path(GST_RTSP_INCLUDE gst/rtsp-server/rtsp-server.h HINTS ${EDGE_DEPS}/include/gstreamer-1.0 /usr/include/gstreamer-1.0 REQUIRED)
+ find_library(GST_APP_LIBRARY NAMES gstapp-1.0 libgstapp-1.0.so.0 REQUIRED)
+ find_library(GST_RTSP_LIBRARY NAMES gstrtspserver-1.0 HINTS ${EDGE_DEPS}/lib/aarch64-linux-gnu REQUIRED)
+ find_library(RKNN_LIBRARY NAMES rknnrt HINTS ${CMAKE_SOURCE_DIR}/lib REQUIRED)
+ add_executable(edge_agent main.cpp app/VisionPipeline.cpp media/VideoService.cpp
+  hardware/v4l2_camera/V4L2Camera.cpp hardware/rknpu_infer/RKNNEngine.cpp)
+ target_include_directories(edge_agent SYSTEM PRIVATE ${GST_APP_INCLUDE} ${GST_RTSP_INCLUDE})
+ target_link_libraries(edge_agent PRIVATE edge_options PkgConfig::GST ${GST_APP_LIBRARY} ${GST_RTSP_LIBRARY} ${RKNN_LIBRARY})
+ add_executable(edge_model_validation tests/model_validation.cpp hardware/rknpu_infer/RKNNEngine.cpp)
+ target_link_libraries(edge_model_validation PRIVATE edge_options ${RKNN_LIBRARY})
+ if(EDGE_WITH_RGA)
+  find_path(RGA_INCLUDE im2d.hpp PATH_SUFFIXES rga REQUIRED)
+  find_library(RGA_LIBRARY NAMES rga REQUIRED)
+  target_include_directories(edge_agent SYSTEM PRIVATE ${RGA_INCLUDE})
+  target_compile_definitions(edge_agent PRIVATE EDGE_WITH_RGA)
+  target_link_libraries(edge_agent PRIVATE ${RGA_LIBRARY})
+  target_include_directories(edge_model_validation SYSTEM PRIVATE ${RGA_INCLUDE})
+  target_compile_definitions(edge_model_validation PRIVATE EDGE_WITH_RGA)
+  target_link_libraries(edge_model_validation PRIVATE ${RGA_LIBRARY})
+ endif()
+endif()
+if(BUILD_TESTING)
+ add_executable(edge_tests tests/core_tests.cpp)
+ target_link_libraries(edge_tests PRIVATE edge_options)
+ add_test(NAME edge_core COMMAND edge_tests)
+endif()

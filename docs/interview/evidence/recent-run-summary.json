@@ -1,0 +1,16 @@
+{
+  "source": "User supplied metrics snapshots, uptime 116.2356 to 126.2415 seconds; attachment c151dac8-ae15-4a12-ae2e-715a27e6eadb",
+  "observation": "Short observation window; not a long-duration stability test",
+  "last_snapshot": {
+    "capture_fps": 19.986907,
+    "process_fps": 14.390573,
+    "encode_fps": 20.186776,
+    "capture_to_detection_average_ms": 93.496516,
+    "capture_to_detection_p95_ms": 118.599767,
+    "queue_wait_average_ms": 24.948577,
+    "inference_average_ms": 51.480282,
+    "inference_service_average_ms": 68.538344,
+    "rss_mb": 54.00390625,
+    "inference_health": "normal"
+  }
+}

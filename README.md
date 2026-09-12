@@ -1,74 +1,71 @@
-# EdgeVision-Agent：基于自研异步框架与 RK3568 的边缘智能体系统
+# EdgeVision：RK3568 视频感知与事件录像系统
 
-[![C++17](https://img.shields.io/badge/C++-17-blue)](https://en.cppreference.com/w/cpp/17)
-[![Platform-RK3568](https://img.shields.io/badge/Platform-RK3568-green)](https://www.rock-chips.com/)
-[![LLM-DeepSeek](https://img.shields.io/badge/LLM-DeepSeek-important)](https://www.deepseek.com/)
+C++17/Linux 摄像头采集、YOLOv5 推理、MPP H.264 编码、RTSP 预览、远程控制和事件录像。
+推理与视频使用独立有界队列，推理落后时丢弃旧的待处理帧，视频继续运行。
 
-## 项目简介
+## 构建与运行
 
-针对边缘设备在视频采集与 AI 决策时面临的**并发瓶颈**与**内存碎片**问题，本项目从零自研 C++ 异步运行时框架，基于 **RK3568 NPU** 实现端到端的视觉感知与决策闭环。项目采用**云边协同**架构，边缘端负责高性能感知与实时执行，云端 Python 微服务对接 **DeepSeek API**，实现了“自然语言驱动、边缘实时响应”的智能体（Agent）系统。
+需要匹配的 OpenCV、RKNN runtime、GStreamer app/RTSP server 开发包、
+Rockchip MPP 插件；RGA 可选。lib/librknnrt.so 与模型必须匹配。
 
----
+~~~bash
+cmake -S . -B build-refactor -DCMAKE_BUILD_TYPE=Release
+cmake --build build-refactor -j2
+(cd build-refactor && ctest --output-on-failure)
+./build-refactor/edge_agent configs/default.json
+~~~
 
-## 🏗️ Architecture
+仅 CPU 预处理可加 -DEDGE_WITH_RGA=OFF。有 OpenCV 的 Linux 主机可加
+-DEDGE_BUILD_AGENT=OFF 仅构建基础测试。
+tools/setup_multimedia_deps.sh 可将缺少的开发包解压至 .deps/，不替换系统运行库；
+应先检查版本是否兼容。构建支持该目录及构建 RPATH。
 
-> 📌 请确保架构图文件 `architecture.png` 与本 `README.md` 位于同一目录下。
+默认 /dev/video10、640×480 YUYV、30 FPS；控制 9000，RTSP 8554。
+PC 的 VLC 打开 rtsp://<板卡IP>:8554/live。当前预览为原始视频，
+检测框通过接口返回，尚未叠加至编码画面。退出用 Ctrl+C。
 
-![系统架构图](architecture.png)
+~~~bash
+python3 tools/edge_client.py get_status --host <板卡IP>
+python3 tools/edge_client.py get_detections --host <板卡IP>
+python3 tools/edge_client.py get_metrics --host <板卡IP>
+python3 tools/edge_client.py capture --host <板卡IP>
+python3 tools/edge_client.py set_threshold --value 0.5 --host <板卡IP>
+python3 tools/edge_client.py stop --host <板卡IP>
+python3 tools/edge_client.py start --host <板卡IP>
+python3 tools/edge_client.py restart_camera --host <板卡IP>
+python3 tools/edge_client.py record_event --host <板卡IP>
+~~~
 
----
+stop 仅暂停推理，视频继续。capture 无条件保存最近有效帧，返回板端文件路径；
+不会自动下载图片。record_event 异步完成，结果见 output/events/*.h264.json。
 
-## Architecture Overview
+## 功能与配置
 
-- **硬件抽象与加速层**：基于 V4L2 与 MMAP 实现零拷贝采集，通过 RKNN API 驱动 NPU 完成 YOLOv5 硬件推理与 NMS 后处理。
-- **基础设施与内存层**：自研侵入式 Free-List 定长内存池与线程安全队列，实现了 O(1) 的内存分配与背压降级机制。
-- **调度与网络层**：基于 `epoll` 事件驱动与 `timerfd` 最小堆定时器，构建单线程 Reactor 模型，支撑高频事件处理与软实时调度。
-- **智能决策层**：通过 `SkillManager` 与 `SafetyRules` 实现动作解耦，将硬件感知结果抽象为可插拔的 Skill 技能。
-- **云端大脑层**：Python 微服务对接大模型 API，将用户自然语言解析为 JSON RPC 指令，通过 TCP 下发至边缘端执行。
+- 固定容量帧池和只读共享引用；驱动缓冲拷贝有效行后立即 QBUF。
+- 摄像头非阻塞取帧、超时重开；signalfd 退出、工作队列排空、资源回收。
+- YOLOv5 anchor 解码、Letterbox 逆变换、同类别 NMS、输出布局校验。
+- 当前仓库模型输出是 logits，默认 output_activation=logits。
+- native_outputs=true 使用原生量化输出；false 可做浮点输出对照。
+- preprocess=cpu/rga；当前 640×480 实测 RGA 未更快，默认 CPU。
+- 人员框中心位于 roi 且连续 event_confirm 帧触发事件，event_pre/event_tail 控制前后缓存。
+- 录像为可解码的 Annex-B H264 裸流及清单，尚无 MP4/MKV 封装和磁盘轮转。
+- synthetic=true 使用合成输入；replay_yuyv 指向恰好一帧 packed YUYV，用于固定输入对照。
+- 两种回放模式仍使用真实 NPU/编码器；非匹配布局模型不能直接替换。
 
----
+## 验证
 
-## ✨ Features
+~~~bash
+python3 tests/board_validation.py
+python3 tools/benchmark.py --seconds 60 --backends cpu rga
+./build-refactor/edge_model_validation models/yolov5s-640-640.rknn frame-640x480.yuyv output/model-report.json
+~~~
 
-- **自研异步运行时**：纯手工打造 C++ 底层框架，包含线程池、事件驱动、软实时定时器，全程无依赖第三方框架。
-- **零拷贝与零碎片**：基于 MMAP 的 V4L2 采集与基于 Free-List 的侵入式内存池，彻底消灭 `memcpy` 与 `malloc` 开销。
-- **硬件级 AI 推理**：量化部署 YOLOv5s INT8 模型至 RK3568 NPU，实测单帧推理仅需 **54ms**。
-- **云边端协同 Agent**：打通 DeepSeek 大模型 API，支持自然语言遥控边缘端摄像头（如“抓拍一张”即可触发本地捕捉）。
-- **工程完整性**：项目结构分层清晰，包含内存防泄漏回调和安全规则校验，经 Valgrind 验证零泄漏。
+[架构与边界](docs/architecture.md) · [协议](docs/protocol.md) · [实测记录](docs/validation.md)
 
----
+output/ 保存配置、日志、指标、抓拍和录像，不纳入 Git。耗时分位数保留最近 1024 次观察，
+CPU 以单核 100% 为口径。本地采集完成至检测/编码完成不包含曝光和 PC 播放。
+服务尚无认证/TLS，用于受信任局域网。DeepSeek 是可选控制入口，不参与实时处理。
 
-## 🛠️ Tech Stack
+[Slow inference protection and fault-injection validation](docs/inference-recovery.md)
 
-| 领域 | 技术选型 |
-| :--- | :--- |
-| **编程语言** | C++17, Python 3 |
-| **操作系统与硬件** | Linux (RK3568 ARMv8), NPU |
-| **硬件驱动** | V4L2, MMAP, RKNPU SDK |
-| **C++ 框架** | 自研 (epoll, timerfd, 最小堆, ThreadPool, MemoryPool) |
-| **AI 模型与推理** | YOLOv5s, RKNN C API, INT8 量化 |
-| **云端大模型** | DeepSeek API (兼容 OpenAI) |
-| **网络协议** | TCP, JSON RPC |
-| **构建系统** | CMake, Make |
-
----
-
-## 📊 Performance
-
-| 指标 | 测量数据 |
-| :--- | :--- |
-| **NPU 单帧推理耗时** | **~54 ms** (YOLOv5s, 640x640) |
-| **系统吞吐量** | 约 18 FPS (实时感知) |
-| **内存分配耗时** | 从微秒级降至 **纳秒级** (内存池) |
-| **系统稳定性** | 24 小时连续运行无 OOM 与内存泄漏 (Valgrind 验证) |
-
----
-
-## 🚀 Build & Run
-
-### 1. 编译项目
-在板子上执行以下命令一键编译：
-```bash
-mkdir -p build && cd build
-cmake ..
-make -j$(nproc)
+[Technical specification, resume and engineering retrospectives](docs/interview/README.md)

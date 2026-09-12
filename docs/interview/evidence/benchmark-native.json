@@ -1,0 +1,218 @@
+{
+  "cpu": {
+    "valid": true,
+    "exit_code": 0,
+    "wall_seconds": 60.577568783999595,
+    "steady_rates": {
+      "captured": 29.985165336603757,
+      "processed": 14.592780463813828,
+      "encoded": 29.985165336603757
+    },
+    "last_metrics": {
+      "capture_fps": 29.984882477920788,
+      "connections": 0,
+      "counts": {
+        "captured": 1804,
+        "encoded": 1804,
+        "events_written": 1,
+        "processed": 878,
+        "stale_results_discarded": 1
+      },
+      "cpu_percent_one_core": 102.78327716571228,
+      "encode_fps": 30.22866201026161,
+      "pipeline": {
+        "capture_error": "",
+        "capture_state": "stopped",
+        "inference_dropped": 923,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_queue": 0,
+        "pool_available": 12,
+        "queue_high_watermark": 2,
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": false
+      },
+      "process_fps": 14.382992408108345,
+      "rate_window_s": 4.102067103,
+      "rss_mb": 54.453125,
+      "sample_window": "latest 1024 observations per stage",
+      "stages_ms": {
+        "capture_to_detection": {
+          "average": 119.2950293986333,
+          "count": 878,
+          "maximum": 148.372272,
+          "p50": 121.345927,
+          "p95": 135.187991
+        },
+        "capture_to_encoded": {
+          "average": 18.98674841894533,
+          "count": 1024,
+          "maximum": 41.6801200000009,
+          "p50": 18.251619999995455,
+          "p95": 30.749447000001965
+        },
+        "capture_wait_and_copy": {
+          "average": 33.255226636718696,
+          "count": 1024,
+          "maximum": 36.702822,
+          "p50": 33.263473,
+          "p95": 33.640719
+        },
+        "inference": {
+          "average": 51.45098382118448,
+          "count": 878,
+          "maximum": 58.365873,
+          "p50": 51.405886,
+          "p95": 52.591833
+        },
+        "input": {
+          "average": 1.388353103644648,
+          "count": 878,
+          "maximum": 2.942021,
+          "p50": 1.34749,
+          "p95": 1.949194
+        },
+        "output": {
+          "average": 10.014688044419128,
+          "count": 878,
+          "maximum": 20.151982,
+          "p50": 9.721473,
+          "p95": 18.464827
+        },
+        "postprocess": {
+          "average": 2.7341518177676565,
+          "count": 878,
+          "maximum": 5.620669,
+          "p50": 2.741356,
+          "p95": 3.938055
+        },
+        "preprocess": {
+          "average": 2.795153846241461,
+          "count": 878,
+          "maximum": 8.597397,
+          "p50": 2.708105,
+          "p95": 4.708633
+        },
+        "queue_wait": {
+          "average": 50.9015443496583,
+          "count": 878,
+          "maximum": 66.613692,
+          "p50": 52.438666,
+          "p95": 65.088452
+        }
+      },
+      "uptime_s": 60.305488843
+    }
+  },
+  "rga": {
+    "valid": true,
+    "exit_code": 0,
+    "wall_seconds": 60.63871550899967,
+    "steady_rates": {
+      "captured": 29.988169416464107,
+      "processed": 14.274368642236915,
+      "encoded": 29.988169416464107
+    },
+    "last_metrics": {
+      "capture_fps": 29.863924423800583,
+      "connections": 0,
+      "counts": {
+        "captured": 1804,
+        "encoded": 1804,
+        "events_written": 1,
+        "processed": 855,
+        "stale_results_discarded": 1
+      },
+      "cpu_percent_one_core": 90.74498206681409,
+      "encode_fps": 30.106720557327414,
+      "pipeline": {
+        "capture_error": "",
+        "capture_state": "stopped",
+        "inference_dropped": 946,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_queue": 0,
+        "pool_available": 12,
+        "queue_high_watermark": 2,
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": false
+      },
+      "process_fps": 13.596583477502703,
+      "rate_window_s": 4.118681733,
+      "rss_mb": 54.8046875,
+      "sample_window": "latest 1024 observations per stage",
+      "stages_ms": {
+        "capture_to_detection": {
+          "average": 120.66308115555543,
+          "count": 855,
+          "maximum": 151.714432,
+          "p50": 121.271646,
+          "p95": 138.012234
+        },
+        "capture_to_encoded": {
+          "average": 18.26083466699212,
+          "count": 1024,
+          "maximum": 49.66173400000116,
+          "p50": 18.22145499999897,
+          "p95": 30.759949999999662
+        },
+        "capture_wait_and_copy": {
+          "average": 33.257831726562486,
+          "count": 1024,
+          "maximum": 34.146676,
+          "p50": 33.263182,
+          "p95": 33.636804
+        },
+        "inference": {
+          "average": 51.58997780701749,
+          "count": 855,
+          "maximum": 61.140486,
+          "p50": 51.420762,
+          "p95": 53.510538
+        },
+        "input": {
+          "average": 1.3078112561403499,
+          "count": 855,
+          "maximum": 2.999771,
+          "p50": 1.311616,
+          "p95": 1.90457
+        },
+        "output": {
+          "average": 9.359222419883041,
+          "count": 855,
+          "maximum": 22.570842,
+          "p50": 9.658182,
+          "p95": 18.954199
+        },
+        "postprocess": {
+          "average": 2.60644210292398,
+          "count": 855,
+          "maximum": 6.081207,
+          "p50": 2.731147,
+          "p95": 5.424087
+        },
+        "preprocess": {
+          "average": 5.391075649122815,
+          "count": 855,
+          "maximum": 19.495155,
+          "p50": 5.508669,
+          "p95": 7.454073
+        },
+        "queue_wait": {
+          "average": 50.39714872631575,
+          "count": 855,
+          "maximum": 66.886904,
+          "p50": 50.692476,
+          "p95": 65.225251
+        }
+      },
+      "uptime_s": 60.344236747
+    }
+  }
+}

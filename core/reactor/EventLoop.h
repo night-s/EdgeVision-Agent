@@ -77,8 +77,8 @@ public:
 
     /// 进入主循环（阻塞，直到 stop() 被调用）
     void run() {
-        loop_tid_ = std::this_thread::get_id();
-        running_ = true;
+        active_loop_ = this;
+        running_ = !stop_requested_;
 
         while (running_) {
             int nfds = ::epoll_wait(epoll_fd_, events_, kMaxEvents, -1);
@@ -93,7 +93,8 @@ public:
                 int fd = events_[i].data.fd;
                 auto it = fd_ctxs_.find(fd);
                 if (it != fd_ctxs_.end()) {
-                    it->second.callback(events_[i].events);
+                    auto callback = it->second.callback;
+                    callback(events_[i].events);
                 }
             }
 
@@ -101,10 +102,12 @@ public:
         }
 
         running_ = false;
+        active_loop_ = nullptr;
     }
 
     /// 停止事件循环（线程安全）
     void stop() {
+        stop_requested_ = true;
         running_ = false;
         uint64_t one = 1;
         if (::write(wakeup_fd_, &one, sizeof(one)) < 0) {
@@ -188,7 +191,7 @@ public:
     // ========== 查询 ==========
 
     bool isInLoopThread() const {
-        return std::this_thread::get_id() == loop_tid_;
+        return active_loop_ == this;
     }
 
     TimerManager& timerMgr() { return timer_mgr_; }
@@ -226,7 +229,8 @@ private:
     int epoll_fd_;
     int wakeup_fd_;
     std::atomic<bool> running_;
-    std::thread::id loop_tid_;
+    std::atomic<bool> stop_requested_{false};
+    inline static thread_local EventLoop* active_loop_ = nullptr;
 
     TimerManager timer_mgr_;
 

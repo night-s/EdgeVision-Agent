@@ -1,159 +1,102 @@
-#ifndef YOLOV5_POST_PROCESS_H
-#define YOLOV5_POST_PROCESS_H
-
+#pragma once
 #include "rknn_api.h"
 #include <opencv2/opencv.hpp>
 #include <vector>
 #include <cmath>
 #include <algorithm>
-
-struct Detection {
-    int class_id;
-    float confidence;
-    cv::Rect box;
+#include <stdexcept>
+struct Detection { int class_id;float confidence;cv::Rect box; };
+struct Letterbox {
+ int width=640,height=640,resized_w=640,resized_h=640,left=0,top=0;
+ static Letterbox make(int w,int h) {
+  if(w<=0 || h<=0)throw std::invalid_argument("invalid input size");
+  Letterbox b;b.width=w;b.height=h;
+  float scale=std::min(640.f/w,640.f/h);
+  b.resized_w=std::max(1,int(std::round(w*scale)));
+  b.resized_h=std::max(1,int(std::round(h*scale)));
+  b.left=(640-b.resized_w)/2;b.top=(640-b.resized_h)/2;return b;
+ }
+ cv::Rect restore(float x1,float y1,float x2,float y2) const {
+  float sx=float(width)/resized_w,sy=float(height)/resized_h;
+  int l=std::clamp(int(std::round((x1-left)*sx)),0,width);
+  int t=std::clamp(int(std::round((y1-top)*sy)),0,height);
+  int r=std::clamp(int(std::round((x2-left)*sx)),0,width);
+  int b=std::clamp(int(std::round((y2-top)*sy)),0,height);
+  return {l,t,std::max(0,r-l),std::max(0,b-t)};
+ }
 };
-
 class Yolov5PostProcess {
 public:
-    Yolov5PostProcess() {
-        // COCO 80 个类别名称（完整版）
-        labels_ = {"person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light",
-                   "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow",
-                   "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee",
-                   "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard",
-                   "tennis racket", "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple",
-                   "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", "couch",
-                   "potted plant", "bed", "dining table", "toilet", "tv", "laptop", "mouse", "remote", "keyboard", "cell phone",
-                   "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors", "teddy bear",
-                   "hair drier", "toothbrush"};
+ static float iou(const Detection& a,const Detection& b){
+  double inter=(a.box&b.box).area(),area=double(a.box.area())+b.box.area()-inter;
+  return area>0?float(inter/area):0;
+ }
+ static std::vector<Detection> nms(std::vector<Detection> d,float threshold) {
+  std::sort(d.begin(),d.end(),[](auto& a,auto& b){return a.confidence>b.confidence;});
+  // A bounded top-k controls quadratic NMS time on pathological model output.
+  if(d.size()>1000)d.resize(1000);
+  std::vector<Detection> out;out.reserve(100);
+  for(const auto& candidate:d){
+   bool suppressed=false;
+   for(const auto& kept:out)
+    if(kept.class_id==candidate.class_id && iou(kept,candidate)>threshold){suppressed=true;break;}
+   if(!suppressed)out.push_back(candidate);
+   if(out.size()==100)break;
+  }return out;
+ }
+ std::vector<Detection> process(const rknn_output* outputs,const Letterbox& b,
+                               float threshold,float nms_threshold,bool logits,const rknn_tensor_attr* quantization=nullptr) const {
+  static constexpr float anchors[3][3][2]={
+   {{10,13},{16,30},{33,23}},{{30,61},{62,45},{59,119}},{{116,90},{156,198},{373,326}}};
+  std::vector<Detection> candidates;candidates.reserve(256);
+  auto activation=[logits](float x){return logits?1.f/(1.f+std::exp(-x)):x;};
+  for(int level=0;level<3;++level){
+   int stride=8<<level,grid=640/stride,hw=grid*grid;
+   const auto* attr=quantization?&quantization[level]:nullptr;
+   if(attr && ((attr->type!=RKNN_TENSOR_INT8 && attr->type!=RKNN_TENSOR_UINT8) ||
+       attr->qnt_type!=RKNN_TENSOR_QNT_AFFINE_ASYMMETRIC ||
+       !std::isfinite(attr->scale) || attr->scale<=0))
+    throw std::runtime_error("unsupported YOLO quantization");
+   if(!outputs[level].buf || outputs[level].size<unsigned(255*hw*(attr?1:sizeof(float))))
+    throw std::runtime_error("invalid YOLO output buffer");
+   auto read=[&](int index){
+    if(!attr)return static_cast<const float*>(outputs[level].buf)[index];
+    int value=attr->type==RKNN_TENSOR_INT8?
+      static_cast<const int8_t*>(outputs[level].buf)[index]:
+      static_cast<const uint8_t*>(outputs[level].buf)[index];
+    return (value-attr->zp)*attr->scale;
+   };
+   for(int a=0;a<3;++a)for(int cell=0;cell<hw;++cell){
+    int offset=a*85*hw+cell;
+    float objectness=activation(read(offset+4*hw));
+    if(!std::isfinite(objectness))continue;
+    if(!logits && (objectness<-.001f || objectness>1.001f))
+     throw std::runtime_error("YOLO objectness is not a probability; select logits for this export");
+    if(objectness<threshold)continue;
+    float score=0;int cls=0;
+    for(int c=0;c<80;++c){
+     float v=activation(read(offset+(5+c)*hw));
+     if(v>score){score=v;cls=c;}
     }
-
-    float sigmoid(float x) { return 1.0f / (1.0f + std::exp(-x)); }
-
-    // 计算两个框的交并比 (IoU)
-    float iou(const Detection& a, const Detection& b) {
-        float inter_x1 = std::max(a.box.x, b.box.x);
-        float inter_y1 = std::max(a.box.y, b.box.y);
-        float inter_x2 = std::min(a.box.x + a.box.width, b.box.x + b.box.width);
-        float inter_y2 = std::min(a.box.y + a.box.height, b.box.y + b.box.height);
-        float inter_area = std::max(0.0f, inter_x2 - inter_x1) * std::max(0.0f, inter_y2 - inter_y1);
-        float union_area = a.box.area() + b.box.area() - inter_area;
-        if (union_area == 0) return 0;
-        return inter_area / union_area;
-    }
-
-    // 非极大值抑制 (NMS) 去重叠
-    std::vector<Detection> nms(const std::vector<Detection>& detections, float iou_threshold = 0.1) {
-        std::vector<Detection> result;
-        if (detections.empty()) return result;
-
-        // 按置信度从高到低排序
-        std::vector<Detection> sorted_dets = detections;
-        std::sort(sorted_dets.begin(), sorted_dets.end(), 
-                  [](const Detection& a, const Detection& b) { return a.confidence > b.confidence; });
-
-        std::vector<bool> removed(sorted_dets.size(), false);
-        for (size_t i = 0; i < sorted_dets.size(); ++i) {
-            if (removed[i]) continue;
-            result.push_back(sorted_dets[i]);
-            for (size_t j = i + 1; j < sorted_dets.size(); ++j) {
-                if (!removed[j] && sorted_dets[i].class_id == sorted_dets[j].class_id) {
-                    if (iou(sorted_dets[i], sorted_dets[j]) > iou_threshold) {
-                        removed[j] = true;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    std::vector<Detection> process(rknn_output* outputs, int orig_w, int orig_h) {
-        std::vector<Detection> candidates;
-        int strides[3] = {8, 16, 32};
-        int grid_sizes[3] = {80, 40, 20};
-        float conf_threshold = 0.25f; // 阈值降到 0.25
-
-        float max_confidence_seen = 0.0f; // 用来记录本帧出现的最高置信度
-
-        for (int idx = 0; idx < 3; ++idx) {
-            float* data = (float*)outputs[idx].buf;
-            int grid_h = grid_sizes[idx];
-            int grid_w = grid_sizes[idx];
-            int stride = strides[idx];
-            int hw = grid_h * grid_w;
-
-            for (int gy = 0; gy < grid_h; ++gy) {
-                for (int gx = 0; gx < grid_w; ++gx) {
-                    for (int a = 0; a < 3; ++a) {
-                        int offset = (a * 85 + 0) * hw + gy * grid_w + gx; 
-
-                        float tx = sigmoid(data[offset]);
-                        float ty = sigmoid(data[offset + 1 * hw]);
-                        float tw = sigmoid(data[offset + 2 * hw]);
-                        float th = sigmoid(data[offset + 3 * hw]);
-                        float box_conf = sigmoid(data[offset + 4 * hw]);
-                        
-                        // 记录当前帧遇到的最大置信度
-                        if (box_conf > max_confidence_seen) {
-                            max_confidence_seen = box_conf;
-                        }
-
-                        if (box_conf < conf_threshold) continue;
-
-                        float max_cls_score = 0;
-                        int max_cls_id = 0;
-                        for (int c = 5; c < 85; ++c) {
-                            float cls_score = sigmoid(data[offset + c * hw]);
-                            if (cls_score > max_cls_score) {
-                                max_cls_score = cls_score;
-                                max_cls_id = c - 5;
-                            }
-                        }
-
-                        float final_conf = box_conf * max_cls_score;
-                        // 记录综合置信度
-                        if (final_conf > max_confidence_seen) {
-                            max_confidence_seen = final_conf;
-                        }
-
-                        if (final_conf < conf_threshold) continue;
-
-                        // ... 后续画框代码保持不变 ...
-                        float cx = (tx * 2.0f - 0.5f + gx) * stride;
-                        float cy = (ty * 2.0f - 0.5f + gy) * stride;
-                        float w  = std::pow(tw * 2.0f, 2) * stride;
-                        float h  = std::pow(th * 2.0f, 2) * stride;
-
-                        Detection det;
-                        det.class_id = max_cls_id;
-                        det.confidence = final_conf;
-                        det.box.x = std::max(0, (int)((cx - w/2) * orig_w / 640.0f));
-                        det.box.y = std::max(0, (int)((cy - h/2) * orig_h / 640.0f));
-                        det.box.width = std::min(orig_w - det.box.x, (int)(w * orig_w / 640.0f));
-                        det.box.height = std::min(orig_h - det.box.y, (int)(h * orig_h / 640.0f));
-                        
-                        candidates.push_back(det);
-                    }
-                }
-            }
-        }
-
-        // 诊断输出：
-        std::cout << "[DEBUG] Max confidence seen this frame: " << max_confidence_seen << std::endl;
-        
-        return nms(candidates);
-    }
-
-    void draw(cv::Mat& img, const std::vector<Detection>& dets) {
-        for (auto& d : dets) {
-            cv::rectangle(img, d.box, cv::Scalar(0, 255, 0), 2);
-            std::string label = labels_[d.class_id] + ": " + std::to_string(d.confidence).substr(0, 4);
-            cv::putText(img, label, cv::Point(d.box.x, d.box.y - 5), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 1);
-        }
-    }
-
-private:
-    std::vector<std::string> labels_;
+    float confidence=score*objectness;
+    if(!std::isfinite(confidence) || confidence<threshold)continue;
+    if(confidence>1.001f)throw std::runtime_error("YOLO activation mismatch; check config/model export");
+    float tx=activation(read(offset)),ty=activation(read(offset+hw));
+    float tw=activation(read(offset+2*hw)),th=activation(read(offset+3*hw));
+    if(!std::isfinite(tx+ty+tw+th) || tx<0 || tx>1 || ty<0 || ty>1 || tw<0 || tw>1 || th<0 || th>1)
+     throw std::runtime_error("YOLO coordinates outside normalized range; check output_activation");
+    float cx=(tx*2-.5f+cell%grid)*stride,cy=(ty*2-.5f+cell/grid)*stride;
+    float w=4*tw*tw*anchors[level][a][0],h=4*th*th*anchors[level][a][1];
+    auto box=b.restore(cx-w/2,cy-h/2,cx+w/2,cy+h/2);
+    if(box.area()>0)candidates.push_back({cls,confidence,box});
+   }
+  }return nms(std::move(candidates),nms_threshold);
+ }
+ static void draw(cv::Mat& image,const std::vector<Detection>& detections) {
+  for(auto& d:detections){
+   cv::rectangle(image,d.box,{0,255,0},2);
+   cv::putText(image,std::to_string(d.class_id)+":"+std::to_string(d.confidence).substr(0,4),
+     d.box.tl(),cv::FONT_HERSHEY_SIMPLEX,.5,{0,255,0},1);
+  }
+ }
 };
-
-#endif // YOLOV5_POST_PROCESS_H

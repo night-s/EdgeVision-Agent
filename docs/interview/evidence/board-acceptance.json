@@ -1,0 +1,157 @@
+{
+  "config": {
+    "device": "/root/workspace/EdgeVision-Agent/output/acceptance-1789142878947564716/camera",
+    "model": "models/yolov5s-640-640.rknn",
+    "width": 640,
+    "height": 480,
+    "fps": 30,
+    "preprocess": "cpu",
+    "output_activation": "logits",
+    "threshold": 0.35,
+    "nms": 0.45,
+    "queue": 2,
+    "pool": 12,
+    "video": true,
+    "bitrate": 2000000,
+    "rtsp_port": 18554,
+    "port": 19000,
+    "output": "/root/workspace/EdgeVision-Agent/output/acceptance-1789142878947564716",
+    "event_confirm": 3,
+    "event_pre": 1,
+    "event_tail": 2,
+    "roi": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "run_seconds": 0,
+    "infer_delay_ms": 150,
+    "synthetic": false,
+    "native_outputs": true,
+    "replay_yuyv": ""
+  },
+  "checks": [
+    "missing camera leaves control service available",
+    "camera appears and capture recovers",
+    "control protocol regression",
+    "stop invalidates in-flight detections",
+    "TCP half-close preserves response",
+    "slow control client cannot block service",
+    "camera restart and resume",
+    "RTSP decode and reconnect",
+    "event recording completes and decodes",
+    "slow inference leaves video running with bounded queue",
+    "no per-connection FD accumulation"
+  ],
+  "note": "No physical USB unplug or external PC latency measurement.",
+  "stress_rates": {
+    "captured": 8.986612350617726,
+    "processed": 3.794347436927484,
+    "encoded": 8.986612350617726
+  },
+  "fd_growth": 2,
+  "last_metrics": {
+    "capture_fps": 9.815743965478152,
+    "counts": {
+      "camera_manual_restarts": 2,
+      "camera_retries": 1,
+      "camera_timeouts": 13,
+      "captured": 264,
+      "encoded": 264,
+      "events_written": 1,
+      "processed": 81,
+      "snapshots": 2,
+      "stale_results_discarded": 5
+    },
+    "cpu_percent_one_core": 40.91012781177678,
+    "encode_fps": 10.516868534440876,
+    "pipeline": {
+      "capture_error": "",
+      "capture_state": "running",
+      "inference_dropped": 117,
+      "inference_enabled": true,
+      "inference_error": "",
+      "inference_queue": 2,
+      "pool_available": 8,
+      "queue_high_watermark": 2,
+      "threshold": 0.6000000238418579,
+      "video_dropped": 0,
+      "video_enabled": true,
+      "video_error": "",
+      "video_healthy": true
+    },
+    "process_fps": 3.5056228448136255,
+    "rate_window_s": 1.426280071,
+    "rss_mb": 55.890625,
+    "sample_window": "latest 1024 observations per stage",
+    "stages_ms": {
+      "capture_to_detection": {
+        "average": 409.66174253086393,
+        "count": 81,
+        "maximum": 676.55308,
+        "p50": 387.494579,
+        "p95": 566.643658
+      },
+      "capture_to_encoded": {
+        "average": 25.064126943181837,
+        "count": 264,
+        "maximum": 54.85338200000024,
+        "p50": 24.264445000000705,
+        "p95": 40.28711699999985
+      },
+      "capture_wait_and_copy": {
+        "average": 85.61997005681812,
+        "count": 264,
+        "maximum": 201.10821,
+        "p50": 67.254332,
+        "p95": 137.516851
+      },
+      "inference": {
+        "average": 80.09805008641976,
+        "count": 81,
+        "maximum": 108.25886,
+        "p50": 79.000579,
+        "p95": 98.645432
+      },
+      "input": {
+        "average": 3.29285148148148,
+        "count": 81,
+        "maximum": 7.195071,
+        "p50": 3.382433,
+        "p95": 4.669174
+      },
+      "output": {
+        "average": 11.004987518518519,
+        "count": 81,
+        "maximum": 30.692146,
+        "p50": 9.790011,
+        "p95": 19.68677
+      },
+      "postprocess": {
+        "average": 2.912636740740742,
+        "count": 81,
+        "maximum": 5.927289,
+        "p50": 2.660271,
+        "p95": 5.320252
+      },
+      "preprocess": {
+        "average": 6.45550588888889,
+        "count": 81,
+        "maximum": 26.484302,
+        "p50": 6.097538,
+        "p95": 10.959293
+      },
+      "queue_wait": {
+        "average": 152.73364989024392,
+        "count": 82,
+        "maximum": 434.178096,
+        "p50": 122.080424,
+        "p95": 309.770399
+      }
+    },
+    "uptime_s": 27.606718372
+  },
+  "exit_code": 0,
+  "shutdown_seconds": 0.21599418799996783
+}

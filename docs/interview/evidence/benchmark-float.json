@@ -1,0 +1,110 @@
+{
+  "cpu": {
+    "valid": true,
+    "exit_code": 0,
+    "wall_seconds": 60.57920447200013,
+    "steady_rates": {
+      "captured": 29.989495177664885,
+      "processed": 11.735889112859525,
+      "encoded": 29.989495177664885
+    },
+    "last_metrics": {
+      "capture_fps": 29.72831873919491,
+      "connections": 0,
+      "counts": {
+        "captured": 1804,
+        "encoded": 1804,
+        "events_written": 1,
+        "processed": 705,
+        "stale_results_discarded": 1
+      },
+      "cpu_percent_one_core": 97.2697295995803,
+      "encode_fps": 29.97001238748105,
+      "pipeline": {
+        "capture_error": "",
+        "capture_state": "stopped",
+        "inference_dropped": 1097,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_queue": 0,
+        "pool_available": 12,
+        "queue_high_watermark": 2,
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": false
+      },
+      "process_fps": 11.117907821162325,
+      "rate_window_s": 4.137469094,
+      "rss_mb": 60.4140625,
+      "sample_window": "latest 1024 observations per stage",
+      "stages_ms": {
+        "capture_to_detection": {
+          "average": 134.70836954326236,
+          "count": 705,
+          "maximum": 174.710152,
+          "p50": 135.089471,
+          "p95": 157.680898
+        },
+        "capture_to_encoded": {
+          "average": 16.071605925781114,
+          "count": 1024,
+          "maximum": 44.70148099999642,
+          "p50": 13.860486999998102,
+          "p95": 28.24930399999721
+        },
+        "capture_wait_and_copy": {
+          "average": 33.26115523242184,
+          "count": 1024,
+          "maximum": 34.178721,
+          "p50": 33.261436,
+          "p95": 33.6771
+        },
+        "inference": {
+          "average": 51.82298427092198,
+          "count": 705,
+          "maximum": 68.883064,
+          "p50": 51.158267,
+          "p95": 56.149276
+        },
+        "input": {
+          "average": 1.019624828368793,
+          "count": 705,
+          "maximum": 2.536608,
+          "p50": 1.049118,
+          "p95": 1.292074
+        },
+        "output": {
+          "average": 28.817579641134778,
+          "count": 705,
+          "maximum": 61.910611,
+          "p50": 25.620987,
+          "p95": 46.251969
+        },
+        "postprocess": {
+          "average": 1.5621158978723404,
+          "count": 705,
+          "maximum": 3.302268,
+          "p50": 1.66453,
+          "p95": 2.281692
+        },
+        "preprocess": {
+          "average": 2.0323822269503555,
+          "count": 705,
+          "maximum": 9.498058,
+          "p50": 1.945986,
+          "p95": 2.718606
+        },
+        "queue_wait": {
+          "average": 49.445015458156035,
+          "count": 705,
+          "maximum": 66.54591,
+          "p50": 48.953867,
+          "p95": 64.402468
+        }
+      },
+      "uptime_s": 60.327092598
+    }
+  }
+}
