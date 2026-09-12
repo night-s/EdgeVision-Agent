@@ -1,0 +1,50 @@
+{
+  "version": 2,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "board-release",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_INSTALL_PREFIX": "/opt/edgevision"
+      }
+    },
+    {
+      "name": "host-tests",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build-host",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "EDGE_BUILD_AGENT": "OFF",
+        "BUILD_TESTING": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "board-release",
+      "configurePreset": "board-release",
+      "jobs": 2
+    },
+    {
+      "name": "host-tests",
+      "configurePreset": "host-tests",
+      "jobs": 2
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "host-tests",
+      "configurePreset": "host-tests",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

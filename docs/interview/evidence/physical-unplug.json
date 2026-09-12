@@ -1,0 +1,2584 @@
+{
+  "status_samples": [
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 180,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 29.037551,
+          "last_service_ms": 60.225254,
+          "recovery_streak": 497,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "state": "idle"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216863094601989,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 184,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 12.419081,
+          "last_service_ms": 62.010533,
+          "recovery_streak": 514,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216864108126877,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 188,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 38.166655,
+          "last_service_ms": 67.790743,
+          "recovery_streak": 529,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216865114937977,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 194,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 6.182124,
+          "last_service_ms": 70.650849,
+          "recovery_streak": 544,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216866122120116,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 199,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 47.102385,
+          "last_service_ms": 65.154387,
+          "recovery_streak": 558,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216867129019341,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 205,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 21.161439,
+          "last_service_ms": 67.34158,
+          "recovery_streak": 573,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216868135332486,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 211,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 20.424693,
+          "last_service_ms": 79.203124,
+          "recovery_streak": 587,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216869142769207,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 217,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 38.899609,
+          "last_service_ms": 78.36463,
+          "recovery_streak": 601,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216870151512336,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 223,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 11.958835,
+          "last_service_ms": 63.790854,
+          "recovery_streak": 616,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216871159413179,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 228,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 37.977073,
+          "last_service_ms": 64.723682,
+          "recovery_streak": 630,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216872166081947,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 234,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 70.845431,
+          "last_service_ms": 80.317574,
+          "recovery_streak": 644,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216873175217406,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 240,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 12.947078,
+          "last_service_ms": 81.408901,
+          "recovery_streak": 659,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216874187684135,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 245,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 60.818209,
+          "last_service_ms": 62.920236,
+          "recovery_streak": 673,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 2,
+        "pool_available": 8,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216875193909948,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 251,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 26.20082,
+          "last_service_ms": 65.068929,
+          "recovery_streak": 688,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216876202675243,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 257,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 33.82356,
+          "last_service_ms": 80.795447,
+          "recovery_streak": 702,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216877209115179,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 263,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 39.251356,
+          "last_service_ms": 68.632697,
+          "recovery_streak": 716,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216878215965113,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 269,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 3.295519,
+          "last_service_ms": 66.15538,
+          "recovery_streak": 731,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216879223184794,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 275,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 29.504215,
+          "last_service_ms": 71.479177,
+          "recovery_streak": 745,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216880232123755,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 281,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 9.419019,
+          "last_service_ms": 66.305879,
+          "recovery_streak": 759,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216881241393130,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 287,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 7.487323,
+          "last_service_ms": 67.814077,
+          "recovery_streak": 774,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216882248831727,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 293,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 10.119056,
+          "last_service_ms": 75.993813,
+          "recovery_streak": 788,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216883256461822,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 298,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 36.855622,
+          "last_service_ms": 66.568086,
+          "recovery_streak": 802,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216884262680676,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 304,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 60.318587,
+          "last_service_ms": 67.633537,
+          "recovery_streak": 816,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216885268941947,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 310,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 34.799387,
+          "last_service_ms": 68.65353,
+          "recovery_streak": 831,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216886276119962,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 315,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 51.487564,
+          "last_service_ms": 82.792349,
+          "recovery_streak": 845,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216887283102687,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 322,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 53.132844,
+          "last_service_ms": 65.201428,
+          "recovery_streak": 859,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216888292010440,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 328,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 53.883881,
+          "last_service_ms": 81.035987,
+          "recovery_streak": 873,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216889301429606,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 334,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 70.568308,
+          "last_service_ms": 70.617016,
+          "recovery_streak": 887,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216890311138062,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 340,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 35.550423,
+          "last_service_ms": 70.799932,
+          "recovery_streak": 902,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216891325932691,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 345,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 9.159145,
+          "last_service_ms": 67.328164,
+          "recovery_streak": 917,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216892332661876,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 351,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 35.850838,
+          "last_service_ms": 59.176428,
+          "recovery_streak": 931,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216893339375894,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 355,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 53.277219,
+          "last_service_ms": 69.499941,
+          "recovery_streak": 947,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216894344714963,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 359,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 16.355096,
+          "last_service_ms": 69.375942,
+          "recovery_streak": 964,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216895359370594,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 363,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 4.069597,
+          "last_service_ms": 73.561204,
+          "recovery_streak": 980,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216896367479894,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 367,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 21.288896,
+          "last_service_ms": 69.219442,
+          "recovery_streak": 996,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216897376151024,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 371,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 9.076313,
+          "last_service_ms": 75.179527,
+          "recovery_streak": 1012,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216898384037034,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 377,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 45.416564,
+          "last_service_ms": 67.425871,
+          "recovery_streak": 1026,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216899391861712,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 383,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 61.835534,
+          "last_service_ms": 68.852986,
+          "recovery_streak": 1040,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216900399174392,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 389,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 3.587476,
+          "last_service_ms": 67.682537,
+          "recovery_streak": 1055,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216901407274235,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 394,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 57.56673,
+          "last_service_ms": 69.965771,
+          "recovery_streak": 1069,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216902418752720,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 400,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 13.30895,
+          "last_service_ms": 67.935701,
+          "recovery_streak": 1084,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216903426258983,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 406,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 39.188357,
+          "last_service_ms": 67.312997,
+          "recovery_streak": 1098,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216904434596907,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 412,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 59.480926,
+          "last_service_ms": 70.098144,
+          "recovery_streak": 1112,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216905442616250,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 417,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 38.80861,
+          "last_service_ms": 67.525912,
+          "recovery_streak": 1127,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216906448886105,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 423,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 20.694483,
+          "last_service_ms": 68.887694,
+          "recovery_streak": 1142,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216907456102661,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 428,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 51.493397,
+          "last_service_ms": 72.936125,
+          "recovery_streak": 1156,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216908464342795,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 434,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 18.01671,
+          "last_service_ms": 67.939493,
+          "recovery_streak": 1171,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216909470678149,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 440,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 35.141509,
+          "last_service_ms": 74.092451,
+          "recovery_streak": 1185,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216910477907289,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 446,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 42.455876,
+          "last_service_ms": 64.170602,
+          "recovery_streak": 1199,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216911486550919,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 452,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 7.084243,
+          "last_service_ms": 73.863202,
+          "recovery_streak": 1214,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216912492727025,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 457,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 36.736207,
+          "last_service_ms": 63.188859,
+          "recovery_streak": 1228,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216913502566397,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 463,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 69.877605,
+          "last_service_ms": 68.457197,
+          "recovery_streak": 1242,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216914508614795,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 469,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 7.120702,
+          "last_service_ms": 73.881202,
+          "recovery_streak": 1257,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216915519401203,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 475,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 47.545132,
+          "last_service_ms": 68.607113,
+          "recovery_streak": 1271,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216916528691204,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 480,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 15.619226,
+          "last_service_ms": 65.816757,
+          "recovery_streak": 1286,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216917536084426,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 485,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 18.98037,
+          "last_service_ms": 67.506954,
+          "recovery_streak": 1301,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216918543335608,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 487,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 35.81438,
+          "last_service_ms": 62.741154,
+          "recovery_streak": 1315,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216919549316173,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 488,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 14.846315,
+          "last_service_ms": 59.471884,
+          "recovery_streak": 1330,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216920554436036,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 492,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 30.02717,
+          "last_service_ms": 59.182553,
+          "recovery_streak": 1346,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216921559296317,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 496,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 31.048871,
+          "last_service_ms": 57.835937,
+          "recovery_streak": 1362,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216922571443674,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 497,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 9.48406,
+          "last_service_ms": 58.589016,
+          "recovery_streak": 1378,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216923579097603,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 497,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 67.987909,
+          "last_service_ms": 70.027312,
+          "recovery_streak": 1392,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216924583941385,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 498,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 30.607582,
+          "last_service_ms": 65.246845,
+          "recovery_streak": 1407,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216925606253380,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 499,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 41.33705,
+          "last_service_ms": 66.675709,
+          "recovery_streak": 1421,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216926614284056,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 499,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 20.117279,
+          "last_service_ms": 67.988534,
+          "recovery_streak": 1436,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216927621905111,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 503,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 8.935813,
+          "last_service_ms": 79.152,
+          "recovery_streak": 1450,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216928629444832,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 508,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 31.391576,
+          "last_service_ms": 73.108124,
+          "recovery_streak": 1464,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216929638686501,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 513,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 21.48752,
+          "last_service_ms": 67.770994,
+          "recovery_streak": 1477,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 10,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216930645980932,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "",
+        "capture_state": "running",
+        "inference_dropped": 518,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 57.10415,
+          "last_service_ms": 66.780417,
+          "recovery_streak": 1491,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 1,
+        "pool_available": 9,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216931653295739,
+      "status": "completed"
+    },
+    {
+      "code": 0,
+      "data": {
+        "capture_error": "camera poll: Success",
+        "capture_state": "recovering",
+        "inference_dropped": 523,
+        "inference_enabled": true,
+        "inference_error": "",
+        "inference_health": {
+          "active": true,
+          "active_ms": 62.358781,
+          "last_service_ms": 67.483913,
+          "recovery_streak": 1506,
+          "slow_streak": 0,
+          "state": "normal"
+        },
+        "inference_queue": 0,
+        "pool_available": 11,
+        "queue_high_watermark": 2,
+        "recorder": {
+          "current": {
+            "event_id": "event-1789216863149256156-1",
+            "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+            "state": "recording"
+          },
+          "recent": []
+        },
+        "threshold": 0.3499999940395355,
+        "video_dropped": 0,
+        "video_enabled": true,
+        "video_error": "",
+        "video_healthy": true
+      },
+      "id": 1789216932661214166,
+      "status": "completed"
+    }
+  ],
+  "events": [
+    {
+      "complete": false,
+      "end_pts_ns": 103815661651,
+      "event_id": "event-1789216863149256156-1",
+      "format": "Annex-B H264",
+      "path": "output/physical-camera-test/events/event-1789216863149256156-1.h264",
+      "reason": "capture_restart",
+      "start_pts_ns": 31895887893,
+      "write_ok": true
+    }
+  ],
+  "provenance": {
+    "execution_commit": "a3b202888825a0bb2dda0c54e068aedf59e8353b",
+    "experiment_date": "2026-09-12",
+    "environment": {
+      "board": "RK3568",
+      "kernel": "Linux 5.10.160 aarch64",
+      "opencv": "4.2.0",
+      "gstreamer": "1.18.5",
+      "mpp_plugin": "1.14.4"
+    },
+    "configuration": {
+      "device": "/dev/v4l/by-id/usb-icSpring_icspring_camera_202510220951-video-index0",
+      "model": "models/yolov5s-640-640.rknn",
+      "width": 640,
+      "height": 480,
+      "fps": 30,
+      "preprocess": "cpu",
+      "output_activation": "logits",
+      "threshold": 0.35,
+      "nms": 0.45,
+      "queue": 2,
+      "pool": 12,
+      "video": true,
+      "bitrate": 2000000,
+      "rtsp_port": 18570,
+      "port": 19020,
+      "output": "output/physical-camera-test",
+      "event_confirm": 3,
+      "event_pre": 1,
+      "event_tail": 2,
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "run_seconds": 300,
+      "infer_delay_ms": 0,
+      "synthetic": false,
+      "native_outputs": true,
+      "replay_yuyv": "",
+      "infer_slow_ms": 150,
+      "infer_stall_ms": 2000,
+      "infer_max_age_ms": 500,
+      "infer_degraded_interval_ms": 200,
+      "allow_fault_injection": false
+    },
+    "command": "build-refactor/edge_agent output/physical-camera-test/config.json",
+    "scope": "Real unplug; process later exited on configured 300 second runtime; replug occurred in a separate instance"
+  }
+}

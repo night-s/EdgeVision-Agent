@@ -1,0 +1,22 @@
+[Unit]
+Description=EdgeVision RK3568 video perception service
+After=network.target
+
+[Service]
+Type=simple
+User=edgevision
+Group=edgevision
+SupplementaryGroups=video
+WorkingDirectory=/opt/edgevision
+ExecStart=/opt/edgevision/bin/edge_agent /etc/edgevision/config.json
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=15
+KillSignal=SIGINT
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/edgevision
+
+[Install]
+WantedBy=multi-user.target

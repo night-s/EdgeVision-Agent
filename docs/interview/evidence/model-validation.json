@@ -34,5 +34,23 @@
   "rga_preprocess_ms": 3.2127318999999996,
   "rga_rgb_max_abs_error": 1.0,
   "rga_rgb_mean_abs_error": 0.15248046875000001,
-  "samples_after_warmup": 10
+  "samples_after_warmup": 10,
+  "provenance": {
+    "experiment_date": "2026-09-12",
+    "execution_commit": null,
+    "archived_commit": "a3b202888825a0bb2dda0c54e068aedf59e8353b",
+    "revision_note": "The original execution did not record its source revision. The archival commit is not proof of an exact execution revision.",
+    "reproduction_command": "./build-refactor/edge_model_validation models/yolov5s-640-640.rknn output/model-check/person.yuyv output/model-check/final.json",
+    "configuration_files": [
+      "embedded config or model arguments in this report"
+    ],
+    "environment": {
+      "board": "RK3568",
+      "kernel": "Linux 5.10.160 aarch64",
+      "opencv": "4.2.0",
+      "gstreamer": "1.18.5",
+      "mpp_plugin": "1.14.4"
+    },
+    "raw_logs": "Board output directories named in the measurements; full logs and images are not published."
+  }
 }

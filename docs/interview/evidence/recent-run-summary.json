@@ -1,5 +1,4 @@
 {
-  "source": "User supplied metrics snapshots, uptime 116.2356 to 126.2415 seconds; attachment c151dac8-ae15-4a12-ae2e-715a27e6eadb",
   "observation": "Short observation window; not a long-duration stability test",
   "last_snapshot": {
     "capture_fps": 19.986907,
@@ -12,5 +11,20 @@
     "inference_service_average_ms": 68.538344,
     "rss_mb": 54.00390625,
     "inference_health": "normal"
+  },
+  "provenance": {
+    "experiment_date": "2026-09-12",
+    "execution_commit": null,
+    "archived_commit": "a3b202888825a0bb2dda0c54e068aedf59e8353b",
+    "configuration": "Full launch configuration not recorded with the excerpt; reported runtime state only.",
+    "log_source": "camera-runtime-metrics.jsonl",
+    "command": "edge_agent; exact launch arguments were not recorded",
+    "environment": {
+      "board": "RK3568",
+      "kernel": "Linux 5.10.160 aarch64",
+      "opencv": "4.2.0",
+      "gstreamer": "1.18.5",
+      "mpp_plugin": "1.14.4"
+    }
   }
 }

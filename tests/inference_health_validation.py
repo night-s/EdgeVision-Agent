@@ -33,6 +33,10 @@ proc = subprocess.Popen(["build-refactor/edge_agent", str(out / "config.json")],
 try:
     until(lambda: call("get_detections").get("fresh"))
     report["checks"].append("initial fresh inference")
+    preview=call("get_preview")
+    assert bytes.fromhex(preview["jpeg_hex"]).startswith(bytes([255,216]))
+    assert preview["sequence"]>0 and preview["width"]==320 and preview["source_width"]==640
+    report["checks"].append("bounded same-frame JPEG and detection preview")
     call("set_infer_delay", value=600)
     until(lambda: call("get_status")["inference_health"]["state"] == "degraded")
     until(lambda: not call("get_detections")["fresh"])

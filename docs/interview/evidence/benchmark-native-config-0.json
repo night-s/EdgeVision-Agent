@@ -14,7 +14,7 @@
   "bitrate": 2000000,
   "rtsp_port": 8554,
   "port": 9000,
-  "output": "output",
+  "output": "output/benchmark-1789143080866302887/cpu",
   "event_confirm": 3,
   "event_pre": 3,
   "event_tail": 5,
@@ -24,18 +24,9 @@
     1,
     1
   ],
-  "run_seconds": 0,
+  "run_seconds": 60,
   "infer_delay_ms": 0,
   "synthetic": false,
   "native_outputs": true,
-  "replay_yuyv": "",
-  "infer_slow_ms": 150,
-  "infer_stall_ms": 2000,
-  "infer_max_age_ms": 500,
-  "infer_degraded_interval_ms": 200,
-  "allow_fault_injection": false,
-  "record_max_mb": 256,
-  "record_max_files": 128,
-  "record_min_free_mb": 64,
-  "record_max_seconds": 60
+  "replay_yuyv": "output/model-check/person.yuyv"
 }

@@ -180,5 +180,23 @@
   },
   "passed": true,
   "shutdown_s": 0.2185320620001221,
-  "returncode": 0
+  "returncode": 0,
+  "provenance": {
+    "experiment_date": "2026-09-12",
+    "execution_commit": null,
+    "archived_commit": "a3b202888825a0bb2dda0c54e068aedf59e8353b",
+    "revision_note": "The original execution did not record its source revision. The archival commit is not proof of an exact execution revision.",
+    "reproduction_command": "python3 tests/inference_health_validation.py",
+    "configuration_files": [
+      "health-acceptance-config-0.json"
+    ],
+    "environment": {
+      "board": "RK3568",
+      "kernel": "Linux 5.10.160 aarch64",
+      "opencv": "4.2.0",
+      "gstreamer": "1.18.5",
+      "mpp_plugin": "1.14.4"
+    },
+    "raw_logs": "Board output directories named in the measurements; full logs and images are not published."
+  }
 }

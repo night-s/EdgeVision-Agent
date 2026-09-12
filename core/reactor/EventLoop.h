@@ -3,20 +3,20 @@
 
 #include "TimerManager.h"
 
+#include <atomic>
+#include <cerrno>
+#include <chrono>
+#include <cstring>
+#include <fcntl.h>
+#include <functional>
+#include <iostream>
+#include <mutex>
 #include <sys/epoll.h>
 #include <sys/eventfd.h>
+#include <thread>
 #include <unistd.h>
-#include <fcntl.h>
-#include <chrono>
-#include <functional>
 #include <unordered_map>
 #include <vector>
-#include <mutex>
-#include <atomic>
-#include <thread>
-#include <iostream>
-#include <cstring>
-#include <cerrno>
 
 /**
  * EventLoop — 基于 epoll 的单线程 Reactor 事件循环
@@ -32,24 +32,20 @@
  *  - 跨线程任务通过 queueInLoop() 投递
  */
 class EventLoop {
-public:
+  public:
     using EventCallback = std::function<void(uint32_t revents)>;
 
     static constexpr int kMaxEvents = 64;
 
     EventLoop()
-        : epoll_fd_(::epoll_create1(EPOLL_CLOEXEC))
-        , wakeup_fd_(::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC))
-        , running_(false)
-    {
+        : epoll_fd_(::epoll_create1(EPOLL_CLOEXEC)),
+          wakeup_fd_(::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC)), running_(false) {
         if (epoll_fd_ < 0) {
-            std::cerr << "[EventLoop] epoll_create1 failed: "
-                      << std::strerror(errno) << std::endl;
+            std::cerr << "[EventLoop] epoll_create1 failed: " << std::strerror(errno) << std::endl;
             return;
         }
         if (wakeup_fd_ < 0) {
-            std::cerr << "[EventLoop] eventfd failed: "
-                      << std::strerror(errno) << std::endl;
+            std::cerr << "[EventLoop] eventfd failed: " << std::strerror(errno) << std::endl;
             return;
         }
 
@@ -59,19 +55,19 @@ public:
         // 将 TimerManager 的 timerfd 注册到 epoll（如果创建成功）
         int tfd = timer_mgr_.getTimerFd();
         if (tfd >= 0) {
-            addFd(tfd, EPOLLIN, [this](uint32_t) {
-                timer_mgr_.handleTimerEvent();
-            });
+            addFd(tfd, EPOLLIN, [this](uint32_t) { timer_mgr_.handleTimerEvent(); });
         }
     }
 
     ~EventLoop() {
-        if (epoll_fd_ >= 0) ::close(epoll_fd_);
-        if (wakeup_fd_ >= 0) ::close(wakeup_fd_);
+        if (epoll_fd_ >= 0)
+            ::close(epoll_fd_);
+        if (wakeup_fd_ >= 0)
+            ::close(wakeup_fd_);
     }
 
-    EventLoop(const EventLoop&) = delete;
-    EventLoop& operator=(const EventLoop&) = delete;
+    EventLoop(const EventLoop &) = delete;
+    EventLoop &operator=(const EventLoop &) = delete;
 
     // ========== 循环控制 ==========
 
@@ -83,9 +79,9 @@ public:
         while (running_) {
             int nfds = ::epoll_wait(epoll_fd_, events_, kMaxEvents, -1);
             if (nfds < 0) {
-                if (errno == EINTR) continue;  // 信号中断，重试
-                std::cerr << "[EventLoop] epoll_wait error: "
-                          << std::strerror(errno) << std::endl;
+                if (errno == EINTR)
+                    continue; // 信号中断，重试
+                std::cerr << "[EventLoop] epoll_wait error: " << std::strerror(errno) << std::endl;
                 break;
             }
 
@@ -119,16 +115,17 @@ public:
 
     /// 注册 fd 到 epoll（LT 模式）
     bool addFd(int fd, uint32_t events, EventCallback cb) {
-        if (epoll_fd_ < 0) return false;
+        if (epoll_fd_ < 0)
+            return false;
 
         fd_ctxs_[fd] = FdCtx{events, std::move(cb)};
 
         struct epoll_event ev;
-        ev.events   = events;
-        ev.data.fd  = fd;
+        ev.events = events;
+        ev.data.fd = fd;
         if (::epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, fd, &ev) < 0) {
-            std::cerr << "[EventLoop] epoll_ctl ADD failed for fd "
-                      << fd << ": " << std::strerror(errno) << std::endl;
+            std::cerr << "[EventLoop] epoll_ctl ADD failed for fd " << fd << ": "
+                      << std::strerror(errno) << std::endl;
             fd_ctxs_.erase(fd);
             return false;
         }
@@ -138,15 +135,16 @@ public:
     /// 修改 fd 监听的事件
     bool updateFd(int fd, uint32_t events) {
         auto it = fd_ctxs_.find(fd);
-        if (it == fd_ctxs_.end()) return false;
+        if (it == fd_ctxs_.end())
+            return false;
         it->second.events = events;
 
         struct epoll_event ev;
-        ev.events   = events;
-        ev.data.fd  = fd;
+        ev.events = events;
+        ev.data.fd = fd;
         if (::epoll_ctl(epoll_fd_, EPOLL_CTL_MOD, fd, &ev) < 0) {
-            std::cerr << "[EventLoop] epoll_ctl MOD failed for fd "
-                      << fd << ": " << std::strerror(errno) << std::endl;
+            std::cerr << "[EventLoop] epoll_ctl MOD failed for fd " << fd << ": "
+                      << std::strerror(errno) << std::endl;
             return false;
         }
         return true;
@@ -194,9 +192,11 @@ public:
         return active_loop_ == this;
     }
 
-    TimerManager& timerMgr() { return timer_mgr_; }
+    TimerManager &timerMgr() {
+        return timer_mgr_;
+    }
 
-private:
+  private:
     // 每个 fd 的上下文
     struct FdCtx {
         uint32_t events = 0;
@@ -220,7 +220,7 @@ private:
         }
 
         calling_pending_functors_ = true;
-        for (auto& f : functors) {
+        for (auto &f : functors) {
             f();
         }
         calling_pending_functors_ = false;
@@ -230,7 +230,7 @@ private:
     int wakeup_fd_;
     std::atomic<bool> running_;
     std::atomic<bool> stop_requested_{false};
-    inline static thread_local EventLoop* active_loop_ = nullptr;
+    inline static thread_local EventLoop *active_loop_ = nullptr;
 
     TimerManager timer_mgr_;
 

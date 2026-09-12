@@ -1,6 +1,6 @@
 {
   "device": "/dev/video10",
-  "model": "models/yolov5s-640-640.rknn",
+  "model": "@CMAKE_INSTALL_PREFIX@/share/edgevision/models/yolov5s-640-640.rknn",
   "width": 640,
   "height": 480,
   "fps": 30,
@@ -14,7 +14,7 @@
   "bitrate": 2000000,
   "rtsp_port": 8554,
   "port": 9000,
-  "output": "output",
+  "output": "/var/lib/edgevision",
   "event_confirm": 3,
   "event_pre": 3,
   "event_tail": 5,

@@ -12,3 +12,6 @@ build-*/
 output/
 **/__pycache__/
 /Testing/
+
+.venv-pc/
+pc-output/

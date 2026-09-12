@@ -1,0 +1,137 @@
+{
+  "date": "2026-09-12",
+  "baseline": {
+    "args": [
+      "--all"
+    ],
+    "returncode": 0,
+    "stdout": "Driver Info:\n\tDriver name      : uvcvideo\n\tCard type        : icspring camera: icspring camer\n\tBus info         : usb-xhci-hcd.0.auto-1\n\tDriver version   : 5.10.160\n\tCapabilities     : 0x84a00001\n\t\tVideo Capture\n\t\tMetadata Capture\n\t\tStreaming\n\t\tExtended Pix Format\n\t\tDevice Capabilities\n\tDevice Caps      : 0x04200001\n\t\tVideo Capture\n\t\tStreaming\n\t\tExtended Pix Format\nMedia Driver Info:\n\tDriver name      : uvcvideo\n\tModel            : icspring camera: icspring camer\n\tSerial           : 202510220951\n\tBus info         : usb-xhci-hcd.0.auto-1\n\tMedia version    : 5.10.160\n\tHardware revision: 0x00000000 (0)\n\tDriver version   : 5.10.160\nInterface Info:\n\tID               : 0x03000002\n\tType             : V4L Video\nEntity Info:\n\tID               : 0x00000001 (1)\n\tName             : icspring camera: icspring camer\n\tFunction         : V4L2 I/O\n\tFlags         : default\n\tPad 0x01000007   : 0: Sink\n\t  Link 0x02000010: from remote pad 0x100000a of entity 'Processing 2': Data, Enabled, Immutable\nPriority: 2\nVideo input : 0 (Camera 1: ok)\nFormat Video Capture:\n\tWidth/Height      : 640/480\n\tPixel Format      : 'YUYV' (YUYV 4:2:2)\n\tField             : None\n\tBytes per Line    : 1280\n\tSize Image        : 614400\n\tColorspace        : sRGB\n\tTransfer Function : Rec. 709\n\tYCbCr/HSV Encoding: ITU-R 601\n\tQuantization      : Default (maps to Limited Range)\n\tFlags             : \nCrop Capability Video Capture:\n\tBounds      : Left 0, Top 0, Width 640, Height 480\n\tDefault     : Left 0, Top 0, Width 640, Height 480\n\tPixel Aspect: 1/1\nSelection Video Capture: crop_default, Left 0, Top 0, Width 640, Height 480, Flags: \nSelection Video Capture: crop_bounds, Left 0, Top 0, Width 640, Height 480, Flags: \nStreaming Parameters Video Capture:\n\tCapabilities     : timeperframe\n\tFrames per second: 30.000 (30/1)\n\tRead buffers     : 0\n                     brightness 0x00980900 (int)    : min=-128 max=127 step=1 default=8 value=8\n                       contrast 0x00980901 (int)    : min=0 max=63 step=1 default=32 value=32\n                     saturation 0x00980902 (int)    : min=0 max=128 step=1 default=58 value=58\n                            hue 0x00980903 (int)    : min=-180 max=180 step=1 default=0 value=0\n white_balance_temperature_auto 0x0098090c (bool)   : default=1 value=1\n                          gamma 0x00980910 (int)    : min=1 max=500 step=1 default=110 value=110\n                           gain 0x00980913 (int)    : min=0 max=63 step=1 default=32 value=0\n           power_line_frequency 0x00980918 (menu)   : min=0 max=2 default=1 value=1\n\t\t\t\t0: Disabled\n\t\t\t\t1: 50 Hz\n\t\t\t\t2: 60 Hz\n      white_balance_temperature 0x0098091a (int)    : min=2800 max=6500 step=1 default=4000 value=4000 flags=inactive\n                      sharpness 0x0098091b (int)    : min=0 max=31 step=1 default=2 value=2\n         backlight_compensation 0x0098091c (int)    : min=0 max=1 step=1 default=0 value=0\n                  exposure_auto 0x009a0901 (menu)   : min=0 max=3 default=3 value=3\n\t\t\t\t1: Manual Mode\n\t\t\t\t3: Aperture Priority Mode\n              exposure_absolute 0x009a0902 (int)    : min=1 max=5000 step=1 default=313 value=313 flags=inactive\n",
+    "stderr": ""
+  },
+  "formats": {
+    "args": [
+      "--list-formats-ext"
+    ],
+    "returncode": 0,
+    "stdout": "ioctl: VIDIOC_ENUM_FMT\n\tType: Video Capture\n\n\t[0]: 'MJPG' (Motion-JPEG, compressed)\n\t\tSize: Discrete 1920x1080\n\t\t\tInterval: Discrete 0.033s (30.000 fps)\n\t\tSize: Discrete 320x240\n\t\t\tInterval: Discrete 0.033s (30.000 fps)\n\t\tSize: Discrete 1280x720\n\t\t\tInterval: Discrete 0.033s (30.000 fps)\n\t\tSize: Discrete 640x480\n\t\t\tInterval: Discrete 0.033s (30.000 fps)\n\t\tSize: Discrete 1280x960\n\t\t\tInterval: Discrete 0.033s (30.000 fps)\n\t\tSize: Discrete 800x600\n\t\t\tInterval: Discrete 0.033s (30.000 fps)\n\t[1]: 'YUYV' (YUYV 4:2:2)\n\t\tSize: Discrete 640x480\n\t\t\tInterval: Discrete 0.033s (30.000 fps)\n\t\tSize: Discrete 320x240\n\t\t\tInterval: Discrete 0.033s (30.000 fps)\n\t\tSize: Discrete 1280x720\n\t\t\tInterval: Discrete 0.100s (10.000 fps)\n\t\tSize: Discrete 1920x1080\n\t\t\tInterval: Discrete 0.200s (5.000 fps)\n\t\tSize: Discrete 1280x960\n\t\t\tInterval: Discrete 0.200s (5.000 fps)\n\t\tSize: Discrete 800x600\n\t\t\tInterval: Discrete 0.050s (20.000 fps)\n",
+    "stderr": ""
+  },
+  "runs": [
+    {
+      "args": [
+        "--set-fmt-video=width=640,height=480,pixelformat=YUYV",
+        "--set-parm=30",
+        "--stream-mmap=4",
+        "--stream-poll",
+        "--stream-count=180",
+        "--stream-to=/dev/null"
+      ],
+      "returncode": 0,
+      "stdout": "Frame rate set to 30.000 fps\n",
+      "stderr": "<<<<<<<<<<<<<<<< 15.00 fps\n<<<<<<<<<<<<<<<<<<<< 17.22 fps\n<<<<<<<<<<<<<<<<<<<< 18.14 fps\n<<<<<<<<<<<<<<<<<<<< 18.60 fps\n<<<<<<<<<<<<<<<<<<<< 18.88 fps\n<<<<<<<<<<<<<<<<<<<< 19.06 fps\n<<<<<<<<<<<<<<<<<<<< 19.20 fps\n<<<<<<<<<<<<<<<<<<<< 19.30 fps\n<<<<<<<<<<<<<<<<<<< 19.38 fps, dropped buffers: 1\n<<<<<\n",
+      "name": "auto",
+      "elapsed_s": 9.69881437499862,
+      "after": {
+        "args": [
+          "--get-parm",
+          "--get-ctrl=exposure_auto,exposure_absolute"
+        ],
+        "returncode": 0,
+        "stdout": "exposure_auto: 3\nexposure_absolute: 313\nStreaming Parameters Video Capture:\n\tCapabilities     : timeperframe\n\tFrames per second: 30.000 (30/1)\n\tRead buffers     : 0\n",
+        "stderr": ""
+      }
+    },
+    {
+      "args": [
+        "--set-fmt-video=width=640,height=480,pixelformat=YUYV",
+        "--set-parm=30",
+        "--stream-mmap=4",
+        "--stream-poll",
+        "--stream-count=180",
+        "--stream-to=/dev/null"
+      ],
+      "returncode": 0,
+      "stdout": "Frame rate set to 30.000 fps\n",
+      "stderr": "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 30.05 fps\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 30.02 fps\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 30.02 fps\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 30.01 fps\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 30.03 fps\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n",
+      "name": "manual_10ms",
+      "elapsed_s": 6.1823357610010135,
+      "after": {
+        "args": [
+          "--get-parm",
+          "--get-ctrl=exposure_auto,exposure_absolute"
+        ],
+        "returncode": 0,
+        "stdout": "exposure_auto: 1\nexposure_absolute: 100\nStreaming Parameters Video Capture:\n\tCapabilities     : timeperframe\n\tFrames per second: 30.000 (30/1)\n\tRead buffers     : 0\n",
+        "stderr": ""
+      }
+    },
+    {
+      "args": [
+        "--set-fmt-video=width=640,height=480,pixelformat=YUYV",
+        "--set-parm=30",
+        "--stream-mmap=4",
+        "--stream-poll",
+        "--stream-count=180",
+        "--stream-to=/dev/null"
+      ],
+      "returncode": 0,
+      "stdout": "Frame rate set to 30.000 fps\n",
+      "stderr": "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 30.04 fps, dropped buffers: 2\n<<<<<<<<<<<<<<<<<<<<<<<<<<<< 30.02 fps, dropped buffers: 2\n<<<<<<<<<<<<<<<<<<<<<<<<<<<< 30.01 fps, dropped buffers: 2\n<<<<<<<<<<<<<<<<<<<<<<<<<<< 30.04 fps, dropped buffers: 3\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 30.03 fps\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 30.03 fps\n<<<<<<<\n",
+      "name": "manual_30ms",
+      "elapsed_s": 6.458031184998617,
+      "after": {
+        "args": [
+          "--get-parm",
+          "--get-ctrl=exposure_auto,exposure_absolute"
+        ],
+        "returncode": 0,
+        "stdout": "exposure_auto: 1\nexposure_absolute: 300\nStreaming Parameters Video Capture:\n\tCapabilities     : timeperframe\n\tFrames per second: 30.000 (30/1)\n\tRead buffers     : 0\n",
+        "stderr": ""
+      }
+    }
+  ],
+  "manual_10ms_controls": {
+    "args": [
+      "--set-ctrl=exposure_auto=1,exposure_absolute=100"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "manual_30ms_controls": {
+    "args": [
+      "--set-ctrl=exposure_auto=1,exposure_absolute=300"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "restored": {
+    "args": [
+      "--set-ctrl=exposure_absolute=313,exposure_auto=3"
+    ],
+    "returncode": 255,
+    "stdout": "VIDIOC_S_EXT_CTRLS: failed: Invalid or incomplete multibyte or wide character\n",
+    "stderr": "exposure_absolute: Invalid or incomplete multibyte or wide character\n"
+  },
+  "restore_retry": {
+    "method": "Set manual mode, restore absolute=313, restore auto=3 with separate ioctls",
+    "verified_readback": {
+      "exposure_auto": 3,
+      "exposure_absolute": 313
+    }
+  },
+  "provenance": {
+    "experiment_date": "2026-09-12",
+    "execution_commit": "a3b202888825a0bb2dda0c54e068aedf59e8353b",
+    "command": "v4l2-ctl commands recorded per run",
+    "environment": {
+      "board": "RK3568",
+      "kernel": "Linux 5.10.160 aarch64",
+      "opencv": "4.2.0",
+      "gstreamer": "1.18.5",
+      "mpp_plugin": "1.14.4"
+    },
+    "configuration": "640x480 YUYV, requested 30 FPS; exposure controls recorded in each run"
+  }
+}

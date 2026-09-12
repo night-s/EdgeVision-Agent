@@ -1,0 +1,173 @@
+{
+  "code": 0,
+  "data": {
+    "capture_fps": 19.91224878549812,
+    "counts": {
+      "camera_retries": 37,
+      "camera_timeouts": 1,
+      "captured": 1795,
+      "encoded": 1795,
+      "processed": 1278
+    },
+    "cpu_percent_one_core": 75.72852225923828,
+    "encode_fps": 19.91224878549812,
+    "pipeline": {
+      "capture_error": "",
+      "capture_state": "running",
+      "inference_dropped": 515,
+      "inference_enabled": true,
+      "inference_error": "",
+      "inference_health": {
+        "active": true,
+        "active_ms": 53.357338,
+        "last_service_ms": 61.6021,
+        "recovery_streak": 1277,
+        "slow_streak": 0,
+        "state": "normal"
+      },
+      "inference_queue": 1,
+      "pool_available": 9,
+      "queue_high_watermark": 2,
+      "recorder": {
+        "current": {
+          "state": "idle"
+        },
+        "recent": []
+      },
+      "threshold": 0.3499999940395355,
+      "video_dropped": 0,
+      "video_enabled": true,
+      "video_error": "",
+      "video_healthy": true
+    },
+    "process_fps": 14.311928814576776,
+    "rate_window_s": 3.214102068,
+    "rss_mb": 57.39453125,
+    "sample_window": "latest 1024 observations per stage",
+    "stages_ms": {
+      "capture_to_detection": {
+        "average": 95.06709026855455,
+        "count": 1024,
+        "maximum": 135.49747,
+        "p50": 94.442363,
+        "p95": 119.530106
+      },
+      "capture_to_encoded": {
+        "average": 19.9399257998045,
+        "count": 1024,
+        "maximum": 41.039775999990525,
+        "p50": 19.120628000004217,
+        "p95": 29.85824600001797
+      },
+      "capture_wait_and_copy": {
+        "average": 49.899528783203145,
+        "count": 1024,
+        "maximum": 55.384695,
+        "p50": 49.871659,
+        "p95": 51.962016
+      },
+      "inference": {
+        "average": 51.41719535253908,
+        "count": 1024,
+        "maximum": 54.797908,
+        "p50": 51.337855,
+        "p95": 52.310013
+      },
+      "inference_service": {
+        "average": 69.7647891337891,
+        "count": 1024,
+        "maximum": 89.148448,
+        "p50": 68.833914,
+        "p95": 79.903777
+      },
+      "input": {
+        "average": 1.483088307617186,
+        "count": 1024,
+        "maximum": 4.29738,
+        "p50": 1.399988,
+        "p95": 2.249314
+      },
+      "output": {
+        "average": 10.853871616210936,
+        "count": 1024,
+        "maximum": 22.562266,
+        "p50": 9.960624,
+        "p95": 19.342002
+      },
+      "postprocess": {
+        "average": 3.1128282763671846,
+        "count": 1024,
+        "maximum": 6.933149,
+        "p50": 2.914308,
+        "p95": 5.49437
+      },
+      "preprocess": {
+        "average": 2.8866776015624986,
+        "count": 1024,
+        "maximum": 8.693343,
+        "p50": 2.674269,
+        "p95": 4.631044
+      },
+      "queue_wait": {
+        "average": 25.323230887695296,
+        "count": 1024,
+        "maximum": 51.62381,
+        "p50": 26.024904,
+        "p95": 46.899309
+      }
+    },
+    "uptime_s": 164.586516786
+  },
+  "id": 1789221758741802173,
+  "status": "completed",
+  "provenance": {
+    "execution_commit": "a3b202888825a0bb2dda0c54e068aedf59e8353b",
+    "experiment_date": "2026-09-12",
+    "environment": {
+      "board": "RK3568",
+      "kernel": "Linux 5.10.160 aarch64",
+      "opencv": "4.2.0",
+      "gstreamer": "1.18.5",
+      "mpp_plugin": "1.14.4"
+    },
+    "configuration": {
+      "device": "/dev/v4l/by-id/usb-icSpring_icspring_camera_202510220951-video-index0",
+      "model": "models/yolov5s-640-640.rknn",
+      "width": 640,
+      "height": 480,
+      "fps": 30,
+      "preprocess": "cpu",
+      "output_activation": "logits",
+      "threshold": 0.35,
+      "nms": 0.45,
+      "queue": 2,
+      "pool": 12,
+      "video": true,
+      "bitrate": 2000000,
+      "rtsp_port": 18570,
+      "port": 19020,
+      "output": "output/physical-camera-recovery",
+      "event_confirm": 3,
+      "event_pre": 1,
+      "event_tail": 2,
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "run_seconds": 600,
+      "infer_delay_ms": 0,
+      "synthetic": false,
+      "native_outputs": true,
+      "replay_yuyv": "",
+      "infer_slow_ms": 150,
+      "infer_stall_ms": 2000,
+      "infer_max_age_ms": 500,
+      "infer_degraded_interval_ms": 200,
+      "allow_fault_injection": false
+    },
+    "command": "build-refactor/edge_agent output/physical-camera-recovery/config.json",
+    "scope": "Started with camera missing; recovered after physical insertion"
+  }
+}

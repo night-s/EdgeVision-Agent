@@ -46,13 +46,13 @@ Release 构建；同一640×480 packed YUYV帧按30Hz回放，真实NPU与MPP编
 当前输入下RGA更慢，保留CPU默认路径。
 
 原始报告：
-- [原生输出CPU/RGA](../output/benchmark-1789143080866302887/summary.json)
-- [浮点输出CPU](../output/benchmark-1789143202539943637/summary.json)
+- [原生输出CPU/RGA](interview/evidence/benchmark-native.json)
+- [浮点输出CPU](interview/evidence/benchmark-float.json)
 - 每个报告同目录的配置、run.log和metrics.jsonl可用于复现。
 
 ### 固定帧正确性与阶段对照
 
-[模型对照](../output/model-check/final.json) 使用仓库已有人员抓拍转换的单帧。
+[模型对照](interview/evidence/model-validation.json) 使用仓库已有人员抓拍转换的单帧。
 12轮浮点/原生输出交替执行（2轮预热，统计10轮），类别、框坐标及置信度一致。
 输出获取+后处理均值：浮点20.38ms，
 原生6.70ms。
@@ -65,7 +65,7 @@ CPU/RGA图像最大绝对差1/255，
 
 ### 功能验收
 
-[验收报告](../output/acceptance-1789142878947564716/report.json) 所列
+[验收报告](interview/evidence/board-acceptance.json) 所列
 11项全部通过，包括基础协议、异步半关闭抓拍、摄像头路径缺失/恢复、
 两次摄像头重启、RTSP两次播放解码、事件录像解码、慢推理视频独立性与退出。
 

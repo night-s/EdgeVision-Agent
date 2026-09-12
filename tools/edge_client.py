@@ -27,7 +27,7 @@ def request(host, port, command, timeout=10):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("command", choices=["get_status", "get_metrics", "get_detections",
-                                          "get_events", "set_infer_delay", "capture", "start", "stop", "set_threshold", "record_event", "restart_camera"])
+                                          "get_preview", "get_events", "set_infer_delay", "capture", "start", "stop", "set_threshold", "record_event", "restart_camera"])
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=9000)
     parser.add_argument("--value", type=float)
