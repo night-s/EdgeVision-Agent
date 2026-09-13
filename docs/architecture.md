@@ -34,7 +34,7 @@ RGA 使用同步虚拟地址包装，尚无 DMA-BUF 共享。640×480 下未证�
 ROI 使用框中心和连续帧确认，无跟踪 ID；尾随时间内再触发延长同一事件。
 前缓存按 GOP 保留，可能多出一个 GOP。Annex-B H264 + JSON 记录起止时间和收尾原因；
 裸流不保留逐帧容器 PTS，不承诺变帧率精确回放或音画同步。
-尚无 MP4/MKV 封装、历史清理、磁盘配额。写盘失败不阻断推理，但永久阻塞的磁盘调用
+已增加事件容量、数量、空间和时长约束，保留活跃及不完整事件；尚无 MP4/MKV 封装。写盘失败不阻断推理，但永久阻塞的磁盘调用
 无法由本进程保证硬截止退出。
 
 ## 异常与退出
@@ -47,5 +47,4 @@ O_NONBLOCK + poll(200ms)，连续 5 次失败重开摄像头；缺失时固定�
 退出停止投递、唤醒队列、join采集/推理、排空JPEG、编码EOS限时等待、
 排空录像、停止网络与释放fd。厂商驱动内核级卡死不在用户态取消能力内。
 
-旧 agent/SkillManager、MemoryPool、SafeQueue、ThreadPool 保留，
-当前可执行文件使用 app/VisionPipeline，不走旧自动抓拍路径。
+旧 SkillManager、MemoryPool、SafeQueue、ThreadPool 和关联 Skill 实现已删除；当前仅保留 app/VisionPipeline 主链路。

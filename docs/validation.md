@@ -1,6 +1,6 @@
 # 验收与测量
 
-原始配置、日志、报告在 output/，不纳入Git。下方为本次已完成的实测摘要。
+原始完整日志和媒体在 output/，不纳入 Git；公开报告及配置已归档至 interview/evidence。下方保留各阶段实测条件，最新 P0 结果见文末。
 
 ~~~bash
 (cd build-refactor && ctest --output-on-failure)
@@ -79,7 +79,7 @@ CPU/RGA图像最大绝对差1/255，
 基础CTest覆盖队列/帧池、Letterbox、anchor/NMS、量化解码、定时器、
 停止竞态与录像排空。Release构建和git diff --check通过。
 
-尚未完成：24小时长稳、物理拔插、磁盘耗尽、外部PC播放时延、
+该阶段尚未完成：24小时长稳、物理拔插、磁盘耗尽、外部PC播放时延、
 数据集mAP、DMA-BUF共享和MP4/MKV封装。无自动化任务留在后台运行。
 
 ## Slow-inference protection acceptance (2026-09-12)

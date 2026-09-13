@@ -19,6 +19,7 @@ def main():
     ap.add_argument("--port", type=int, default=9000)
     ap.add_argument("--rtsp-port", type=int, default=8554)
     ap.add_argument("--source", help="Override RTSP URL or play a local recording; overlay disabled for files")
+    ap.add_argument("--file-fps", type=float, default=0, help="Override local-file playback FPS; raw H264 has no capture timeline")
     ap.add_argument("--headless", action="store_true", help="Decode without a desktop window")
     ap.add_argument("--seconds", type=float, default=0)
     ap.add_argument("--output", default="pc-output")
@@ -28,10 +29,14 @@ def main():
     args = ap.parse_args()
     out = Path(args.output)
     out.mkdir(parents=True, exist_ok=True)
+    if os.name == "nt":
+        import ctypes
+        ctypes.windll.kernel32.SetThreadExecutionState(0x80000001)
     stop = threading.Event()
     lock = threading.Lock()
     state = dict(frame=None, preview=None, metrics={}, frames=0, reconnects=0,
                  read_errors=0, control_errors=0, last_frame=0., video_error="", control_error="")
+    local_file = bool(args.source and not args.source.startswith("rtsp://"))
     url = args.source or f"rtsp://{args.host}:{args.rtsp_port}/live"
     started = time.monotonic()
     def command(cmd):
@@ -49,13 +54,18 @@ def main():
                     with lock: state["video_error"] = "cannot open video"
                     stop.wait(1)
                     continue
+                file_fps = args.file_fps or cap.get(cv2.CAP_PROP_FPS) or 25
+                if file_fps <= 0 or file_fps > 240: file_fps = 25
+                next_file_frame = time.monotonic()
                 while not stop.is_set():
                     ok, frame = cap.read()
                     if not ok:
-                        with lock:
-                            state["read_errors"] += 1
-                            state["video_error"] = "read failed / end of file"
-                        if args.source and not args.source.startswith("rtsp://"): stop.set()
+                        if local_file:
+                            stop.set()
+                        else:
+                            with lock:
+                                state["read_errors"] += 1
+                                state["video_error"] = "video read failed"
                         break
                     with lock:
                         state["frame"] = frame
@@ -63,6 +73,9 @@ def main():
                         state["last_frame"] = time.monotonic()
                         state["video_error"] = ""
                         reconnects = state["reconnects"]
+                    if local_file and not args.headless:
+                        next_file_frame += 1 / file_fps
+                        stop.wait(max(0, next_file_frame - time.monotonic()))
                     if args.reconnect_every and reconnects < args.reconnect_count and time.monotonic() >= next_reconnect:
                         with lock: state["reconnects"] += 1
                         next_reconnect = time.monotonic() + args.reconnect_every
@@ -99,6 +112,9 @@ def main():
     if not args.source: threads.append(threading.Thread(target=controls, daemon=True))
     for thread in threads: thread.start()
     last_log = 0.
+    last_tick = time.monotonic()
+    observed_seconds = 0.
+    clock_gaps = 0
     metrics_seen = []
     def label(img, text, y, color=(230, 230, 230)):
         cv2.putText(img, text, (12, y), cv2.FONT_HERSHEY_SIMPLEX, .52, color, 1, cv2.LINE_AA)
@@ -106,6 +122,12 @@ def main():
         with (out / "pc-metrics.jsonl").open("w", encoding="utf-8") as log:
             while not stop.is_set():
                 now = time.monotonic()
+                tick = now - last_tick
+                last_tick = now
+                if tick > 15:
+                    clock_gaps += 1
+                else:
+                    observed_seconds += tick
                 if args.seconds and now - started >= args.seconds: break
                 with lock: snapshot = dict(state)
                 m = snapshot["metrics"]
@@ -164,10 +186,13 @@ def main():
         stop.set()
         for thread in threads: thread.join(7)
         cv2.destroyAllWindows()
+        if os.name == "nt":
+            ctypes.windll.kernel32.SetThreadExecutionState(0x80000000)
         with lock:
             report = {k:v for k,v in state.items() if k not in ("frame","preview")}
         report.update(duration_s=time.monotonic()-started, workers_stopped=all(not t.is_alive() for t in threads),
-                      samples=len(metrics_seen), source=url)
+                      samples=len(metrics_seen), source=url,
+                      observed_seconds=observed_seconds, clock_gaps=clock_gaps)
         steady = metrics_seen[12:] or metrics_seen
         if steady:
             report["steady_rss_start_mb"] = steady[0]["rss_mb"]
@@ -175,9 +200,13 @@ def main():
             report["steady_rss_max_mb"] = max(m["rss_mb"] for m in steady)
             report["fd_start"] = steady[0].get("fd_count")
             report["fd_end"] = steady[-1].get("fd_count")
+        expected_reconnects = min(args.reconnect_count, int(args.seconds / args.reconnect_every)) if args.seconds and args.reconnect_every else 0
+        report["passed"] = bool(report["frames"]) and report["workers_stopped"] and not clock_gaps and report["read_errors"] == 0 and report["control_errors"] == 0
+        if args.seconds and not local_file:
+            report["passed"] = report["passed"] and observed_seconds >= args.seconds - 1 and report["reconnects"] >= expected_reconnects
         (out / "report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
         print(json.dumps({k:report[k] for k in ("duration_s","frames","reconnects","read_errors","control_errors","workers_stopped")},indent=2))
-    return 0 if report["frames"] and report["workers_stopped"] else 1
+    return 0 if report["passed"] else 1
 
 if __name__ == "__main__":
     raise SystemExit(main())

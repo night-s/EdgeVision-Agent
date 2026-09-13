@@ -1,0 +1,11 @@
+{
+  "status": "partial observed runtime configuration; original launch file not captured",
+  "requested_fps": null,
+  "width": null,
+  "height": null,
+  "threshold": 0.3499999940395355,
+  "video_enabled": true,
+  "inference_enabled": true,
+  "capture_state": "running",
+  "notes": "Do not reconstruct an exact configuration from defaults. See raw metrics excerpt."
+}

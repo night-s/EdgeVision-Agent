@@ -29,10 +29,12 @@ report={"started_utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),"
         "source_commit":subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip(),
         "binary_sha256":hashlib.sha256(Path("build-refactor/edge_agent").read_bytes()).hexdigest(),
         "environment":subprocess.check_output(["uname","-a"],text=True).strip()}
+(out/"execution.json").write_text(json.dumps(report,indent=2))
 log=(out/"agent.log").open("w")
 proc=subprocess.Popen(["build-refactor/edge_agent",str(out/"config.json")],stdout=log,stderr=subprocess.STDOUT)
 (out/"pid").write_text(str(proc.pid))
 def stop(signum,frame):
+    report["stop_requested_monotonic"]=time.monotonic()
     if proc.poll() is None: proc.send_signal(signal.SIGINT)
 signal.signal(signal.SIGINT,stop)
 signal.signal(signal.SIGTERM,stop)
@@ -44,7 +46,10 @@ finally:
         proc.send_signal(signal.SIGINT)
         try:proc.wait(15)
         except subprocess.TimeoutExpired:proc.kill();proc.wait()
+    ended=time.monotonic()
     log.close()
+    report["graceful_shutdown_marker"]="[shutdown] all workers stopped" in (out/"agent.log").read_text(errors="replace")
+    if "stop_requested_monotonic" in report: report["shutdown_s"]=ended-report["stop_requested_monotonic"]
     report.update(duration_s=time.monotonic()-start,returncode=proc.returncode)
     entries=[]
     metrics=out/"metrics.jsonl"
@@ -61,7 +66,7 @@ finally:
         except subprocess.TimeoutExpired:
             results.append(dict(file=path.name,returncode=-1,error="decode timeout"))
     report["recording_decode"]=results
-    report["passed"]=proc.returncode==0 and bool(results) and all(r["returncode"]==0 for r in results)
+    report["passed"]=proc.returncode==0 and report["graceful_shutdown_marker"] and bool(results) and all(r["returncode"]==0 for r in results)
     report["scope"]="Board execution and final decode only; pair with PC report for duration, playback and reconnect assertions."
     (out/"board-report.json").write_text(json.dumps(report,indent=2))
     print(json.dumps({"output":str(out),"duration_s":report["duration_s"],"passed":report["passed"]}))

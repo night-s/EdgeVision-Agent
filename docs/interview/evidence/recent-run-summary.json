@@ -25,6 +25,7 @@
       "opencv": "4.2.0",
       "gstreamer": "1.18.5",
       "mpp_plugin": "1.14.4"
-    }
+    },
+    "configuration_file": "recent-run-observed-config.json"
   }
 }

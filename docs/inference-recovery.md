@@ -22,7 +22,7 @@ active_ms 是整个处理任务年龄，不能单独证明卡在 rknn_run。模�
 
 录像线程每 100 ms 检查输入，2 秒无包则关闭活动文件并写 input_timeout / complete=false。摄像头重启设置时间边界并清空预录缓存，边界前编码包丢弃。get_events 返回 current 和最近 32 条结束事件，含 event_id、path、reason、complete、write_ok、manifest_ok。
 
-ID 在实际打开文件时产生。record_event 为可合并触发，不是逐请求独立录像；无包且尚未打开文件的请求没有独立超时终态。历史仅驻留内存，磁盘清单保留。本轮尚未实现磁盘配额、连续事件时长限制、MP4/MKV、编码器自动重建与推理进程隔离。
+ID 在实际打开文件时产生。record_event 为可合并触发，不是逐请求独立录像；无包且尚未打开文件的请求没有独立超时终态。历史仅驻留内存，磁盘清单保留。后续 P0 收敛已补充事件磁盘预算及单段时长限制，见 deployment.md；MP4/MKV、编码器自动重建与推理进程隔离仍未实现。
 
 ## 验证
 
