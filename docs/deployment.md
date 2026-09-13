@@ -26,8 +26,8 @@ cmake --build build-cross -j2
 ~~~sh
 DESTDIR="$PWD/output/install-stage" cmake --install build-refactor
 ~~~
-程序 /opt/edgevision/bin/edge_agent；RKNN 库 /opt/edgevision/lib；模型与示例配置 /opt/edgevision/share/edgevision；运行配置 /etc/edgevision/config.json；可写状态 /var/lib/edgevision。
-MPP/GStreamer 等平台依赖仍由板端系统提供；本安装规则不打包整个根文件系统。
+程序 /opt/edgevision/bin/edge_agent；RKNN 和 RTSP server 运行库 /opt/edgevision/lib；模型与示例配置 /opt/edgevision/share/edgevision；运行配置 /etc/edgevision/config.json；可写状态 /var/lib/edgevision。
+除打包的 RTSP server 库外，MPP/GStreamer 等平台依赖仍由板端系统提供；本安装规则不打包整个根文件系统。
 
 安装服务前创建 edgevision 用户、组与数据目录，将示例配置复制到 /etc/edgevision/config.json，修改 device 为实际 /dev/v4l/by-id/...-video-index0。服务模板在 deploy/edgevision.service，不会自动启用。
 检查 video 组、/dev/rknpu、/dev/dri、/dev/mpp_service、/dev/rga 等实际设备访问权限；不同 BSP 节点不同，需要按目标板配置 udev/附加组。不要用 chmod 777 或直接声称此模板跨板即装即用。
@@ -48,3 +48,5 @@ systemctl stop edgevision
 配额每秒检查；允许约一秒编码量和当前包/清单的临时超额，不是严格逐字节硬限额。只删除名称、格式清单均符合本项目且 complete/write_ok 为真的结束事件；活跃文件、不完整文件、符号链接和无关文件不删除。保护文件占满预算时拒绝新录像并报告 storage_budget，不无限扩大存储。
 
 最长时长按文件打开后的单调时间限制，不含启动前预录时长；完整段以 max_duration 收尾。持续触发时后续可从关键帧开始新段；不是严格无缝拼接。磁盘调用永久阻塞仍不能保证硬截止，JPEG 抓拍和 metrics 日志暂不包含在事件配额内。
+
+安装验收同时执行 staging 程序的 --help，确认动态库可加载；不能只看文件已复制。已修复原规则遗漏 RTSP server 库导致的启动失败。
