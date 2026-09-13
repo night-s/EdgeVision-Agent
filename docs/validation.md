@@ -103,4 +103,20 @@ CPU/RGA图像最大绝对差1/255，
 
 完整链路光照 A/B/A 对照：原光照 20.01 FPS、增亮 30.02 FPS、恢复 20.00 FPS；见 [报告](interview/evidence/lighting-ab-a.json) 与 [排查说明](camera-investigation.md)。历史 8.99 FPS 不作追溯归因。
 
-PC 播放与长稳方法见 [客户端说明](pc-viewer.md)。自动验收脚本 tools/analyze_soak.py 检查有效观察时长、采样断档、持续解码、重连、退出、录像解码及 RSS/FD 增量；不以电脑休眠后的墙钟时长充当运行时长。当前一小时测试结果待完成后单独归档。
+PC 播放与长稳方法见 [客户端说明](pc-viewer.md)。自动验收脚本 tools/analyze_soak.py 检查有效观察时长、采样断档、持续解码、重连、退出、录像解码及 RSS/FD 增量；不以电脑休眠后的墙钟时长充当运行时长。本次一小时测试已完成，结果见下。
+
+新增 [九项推理健康与同帧预览回归](interview/evidence/p0-health-acceptance.json) 全部通过；配置已归档。执行时未独立保存 HEAD，报告区分实现提交与执行版本，不补造版本信息。
+
+## 真实摄像头一小时联合验收（2026-09-13）
+
+[联合报告](interview/evidence/soak-1h.json) · [每 5 秒指标表](interview/evidence/soak-1h.csv) · [PC 原始报告](interview/evidence/soak-pc-report.json) · [板端退出与录像解码](interview/evidence/soak-board-report.json)。
+
+运行源码 cab3b1f，二进制 SHA-256、板卡环境、完整配置及命令见报告。真实 USB 摄像头 640×480 YUYV、自动曝光；NPU 推理、MPP H.264 编码与 PC RTSP/TCP 解码同时开启。PC 有效观察 3600.031 秒、717 条有效指标样本、解码 71570 帧；10 次计划重连，读取/控制错误均为 0，没有采样长断档。
+
+稳态累计计数差：采集 19.98、编码 19.98、检测 14.44 FPS。板端预热后 RSS 55.40 → 59.34 MB，FD 起止 46、峰值 48。视频分支丢帧为 0；推理按最新帧策略主动丢弃 20004 帧（PC 最后样本）。板端最终记录 1 次采集超时、10 个驱动序列缺口、1 个过期结果，不能写成全链路零异常。
+
+16 段事件录像全部通过 GStreamer 实际解码；SIGINT 后约 0.205 秒退出，退出码 0 且所有工作线程完成收尾。最后滚动窗口检测链 P95 118.95 ms，不是整小时全局 P95。
+
+这证明本次一小时、单摄像头与单 PC 会话条件下的运行表现。不能替代 24 小时测试、内存泄漏工具分析、真实 NPU 永久阻塞恢复或同一进程完整物理拔插循环。此前中断测试另存 [失败记录](interview/evidence/soak-interrupted.json)，不混入通过时长。
+
+[安装启动检查](interview/evidence/install-smoke.json) 通过；交叉编译与 systemd 服务启动仍未实测。

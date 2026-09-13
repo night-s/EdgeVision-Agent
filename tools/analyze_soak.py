@@ -29,6 +29,12 @@ def analyze(pc, rows, board, seconds=3600, reconnects=10):
     rss_start, rss_end = first.get("rss_mb", 0), last.get("rss_mb", 0)
     fd_start, fd_end = first.get("fd_count", 0), last.get("fd_count", 0)
     decode = board.get("recording_decode", [])
+    interval = last.get("uptime_s", 0) - first.get("uptime_s", 0)
+    rates = {
+        key: (last.get("counts", {}).get(key, 0) - first.get("counts", {}).get(key, 0)) / interval
+        for key in ("captured", "processed", "encoded")
+    } if interval > 0 else {}
+
     checks = {
         "effective_observation_duration": pc.get("observed_seconds", 0) >= seconds - 1,
         "no_suspend_or_clock_gap": pc.get("clock_gaps", 1) == 0 and not gaps,
@@ -57,6 +63,15 @@ def analyze(pc, rows, board, seconds=3600, reconnects=10):
         "fd_peak": max((r["metrics"].get("fd_count", 0) for r in steady), default=0),
         "shutdown_s": board.get("shutdown_s"), "recording_decode": decode,
         "last_counts": board.get("last_metrics", {}).get("counts", {}),
+        "steady_rates_fps": rates,
+        "rate_window_board_uptime_s": [first.get("uptime_s"), last.get("uptime_s")],
+        "last_pipeline_drops": {
+            key: last.get("pipeline", {}).get(key, 0)
+            for key in ("inference_dropped", "video_dropped")
+        },
+        "last_window_stages_ms": last.get("stages_ms", {}),
+        "latency_scope": "Last rolling stage window, not a global one-hour percentile.",
+
         "scope": "One measured run. Memory/FD thresholds are acceptance budgets, not proof of absence of leaks.",
     }
 

@@ -1,0 +1,198 @@
+{
+  "checks": [
+    "initial fresh inference",
+    "bounded same-frame JPEG and detection preview",
+    "degradation and expired-result filtering",
+    "capture and encoder continue during slowdown",
+    "snapshot responds during slowdown",
+    "stall observable while worker active",
+    "hysteretic recovery and fresh results",
+    "queryable event completion",
+    "capture restart closes old recording and new event completes"
+  ],
+  "output": "/root/workspace/EdgeVision-Agent/output/health-validation-1789222990863410947",
+  "final_metrics": {
+    "capture_fps": 29.982714976808957,
+    "counts": {
+      "camera_manual_restarts": 1,
+      "captured": 503,
+      "detections_published": 29,
+      "encoded": 502,
+      "events_written": 3,
+      "inference_degradations": 1,
+      "inference_recoveries": 1,
+      "previews": 1,
+      "processed": 36,
+      "snapshots": 1,
+      "stale_results_discarded": 7
+    },
+    "cpu_percent_one_core": 93.07941975174492,
+    "encode_fps": 29.982714976808957,
+    "fd_count": 40,
+    "pipeline": {
+      "camera": {},
+      "capture_error": "",
+      "capture_state": "synthetic",
+      "inference_dropped": 386,
+      "inference_enabled": false,
+      "inference_error": "",
+      "inference_health": {
+        "active": false,
+        "active_ms": 0.0,
+        "fast_streak": 12,
+        "last_service_ms": 67.109175,
+        "slow_streak": 0,
+        "state": "normal"
+      },
+      "inference_queue": 0,
+      "pool_available": 10,
+      "queue_high_watermark": 2,
+      "recorder": {
+        "current": {
+          "complete": true,
+          "end_pts_ns": 17213092643,
+          "event_id": "event-1789223007455645872-3",
+          "format": "Annex-B H264",
+          "manifest_ok": true,
+          "path": "/root/workspace/EdgeVision-Agent/output/health-validation-1789222990863410947/events/event-1789223007455645872-3.h264",
+          "reason": "tail_complete",
+          "start_pts_ns": 16516226762,
+          "state": "completed",
+          "write_ok": true
+        },
+        "recent": [
+          {
+            "complete": true,
+            "end_pts_ns": 15916594872,
+            "event_id": "event-1789223005836823312-1",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/health-validation-1789222990863410947/events/event-1789223005836823312-1.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 13519471592,
+            "state": "completed",
+            "write_ok": true
+          },
+          {
+            "complete": false,
+            "end_pts_ns": 16048346319,
+            "event_id": "event-1789223006884670932-2",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/health-validation-1789222990863410947/events/event-1789223006884670932-2.h264",
+            "reason": "capture_restart",
+            "start_pts_ns": 14514973156,
+            "state": "incomplete",
+            "write_ok": true
+          },
+          {
+            "complete": true,
+            "end_pts_ns": 17213092643,
+            "event_id": "event-1789223007455645872-3",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/health-validation-1789222990863410947/events/event-1789223007455645872-3.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 16516226762,
+            "state": "completed",
+            "write_ok": true
+          }
+        ]
+      },
+      "threshold": 0.3499999940395355,
+      "video_dropped": 0,
+      "video_enabled": true,
+      "video_error": "",
+      "video_healthy": true
+    },
+    "process_fps": 2.3986171981447164,
+    "rate_window_s": 5.002882498,
+    "rss_mb": 57.57421875,
+    "sample_window": "latest 1024 observations per stage",
+    "stages_ms": {
+      "capture_to_detection": {
+        "average": 238.25401755555555,
+        "count": 36,
+        "maximum": 1651.424908,
+        "p50": 117.734367,
+        "p95": 746.050626
+      },
+      "capture_to_encoded": {
+        "average": 22.166287587649435,
+        "count": 502,
+        "maximum": 46.48963299999923,
+        "p50": 21.495410999999876,
+        "p95": 36.305946000000404
+      },
+      "capture_wait_and_copy": {
+        "average": 33.16059477335984,
+        "count": 503,
+        "maximum": 41.161624,
+        "p50": 33.243089,
+        "p95": 35.778074
+      },
+      "inference": {
+        "average": 74.61642769444444,
+        "count": 36,
+        "maximum": 93.409765,
+        "p50": 75.830288,
+        "p95": 92.856518
+      },
+      "inference_service": {
+        "average": 222.39064069444441,
+        "count": 36,
+        "maximum": 1634.62701,
+        "p50": 98.357568,
+        "p95": 717.898256
+      },
+      "input": {
+        "average": 3.0157432500000003,
+        "count": 36,
+        "maximum": 4.057059,
+        "p50": 3.140064,
+        "p95": 3.956434
+      },
+      "output": {
+        "average": 9.113115749999999,
+        "count": 36,
+        "maximum": 18.523804,
+        "p50": 9.644774,
+        "p95": 13.386543
+      },
+      "postprocess": {
+        "average": 2.441445833333333,
+        "count": 36,
+        "maximum": 3.733311,
+        "p50": 2.655317,
+        "p95": 3.721061
+      },
+      "preprocess": {
+        "average": 6.00214513888889,
+        "count": 36,
+        "maximum": 11.648221,
+        "p50": 5.5008,
+        "p95": 10.732393
+      },
+      "queue_wait": {
+        "average": 15.863376861111107,
+        "count": 36,
+        "maximum": 33.09959,
+        "p50": 16.128777,
+        "p95": 32.613218
+      }
+    },
+    "uptime_s": 17.245339114
+  },
+  "passed": true,
+  "shutdown_s": 0.26827803299966035,
+  "returncode": 0,
+  "provenance": {
+    "experiment_date": "2026-09-12",
+    "execution_commit": null,
+    "implementation_commit": "020fc851931b3b3700c85a91b7a56b979aeaea77",
+    "revision_note": "Run preceded the implementation commit; execution did not independently record HEAD.",
+    "command": "python3 tests/inference_health_validation.py",
+    "configuration_file": "p0-health-config.json",
+    "environment": "RK3568 Linux 5.10.160; real RKNN and MPP, synthetic 30 Hz input"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "experiment_utc": "2026-09-13T02:14:14.886379+00:00",
+  "source_commit": "041f439a1a5b76b3ea427cd05088ab777e2c7775",
+  "command": [
+    "output/install-stage/opt/edgevision/bin/edge_agent",
+    "--help"
+  ],
+  "returncode": 0,
+  "stdout": "Usage: edge_agent [config.json]\nDefault: configs/default.json\n",
+  "stderr": "",
+  "passed": true,
+  "scope": "Staging installation and dynamic loader smoke only. Not a systemd service or clean-board deployment acceptance.",
+  "environment": "Linux kickpi 5.10.160 #79 SMP Mon Apr 27 13:55:58 CST 2026 aarch64 aarch64 aarch64 GNU/Linux"
+}

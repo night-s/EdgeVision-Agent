@@ -1,0 +1,634 @@
+{
+  "started_utc": "2026-09-13T01:28:05.189907+00:00",
+  "config": {
+    "device": "/dev/v4l/by-id/usb-icSpring_icspring_camera_202510220951-video-index0",
+    "model": "models/yolov5s-640-640.rknn",
+    "width": 640,
+    "height": 480,
+    "fps": 30,
+    "preprocess": "cpu",
+    "output_activation": "logits",
+    "threshold": 0.35,
+    "nms": 0.45,
+    "queue": 2,
+    "pool": 12,
+    "video": true,
+    "bitrate": 2000000,
+    "rtsp_port": 18580,
+    "port": 19400,
+    "output": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f",
+    "event_confirm": 3,
+    "event_pre": 1,
+    "event_tail": 2,
+    "roi": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "run_seconds": 3900,
+    "infer_delay_ms": 0,
+    "synthetic": false,
+    "native_outputs": true,
+    "replay_yuyv": "",
+    "infer_slow_ms": 150,
+    "infer_stall_ms": 2000,
+    "infer_max_age_ms": 500,
+    "infer_degraded_interval_ms": 200,
+    "allow_fault_injection": false,
+    "record_max_mb": 256,
+    "record_max_files": 128,
+    "record_min_free_mb": 64,
+    "record_max_seconds": 30
+  },
+  "source_commit": "cab3b1f41d122a2ae43d57e9055e9f7e5263643e",
+  "binary_sha256": "ff9609850aca35af7a39882456f5e882c59be89b0d68f2b3e3f4db6cc54d9605",
+  "environment": "Linux kickpi 5.10.160 #79 SMP Mon Apr 27 13:55:58 CST 2026 aarch64 aarch64 aarch64 GNU/Linux",
+  "stop_requested_monotonic": 4186.486336354,
+  "graceful_shutdown_marker": true,
+  "shutdown_s": 0.20543936700050835,
+  "duration_s": 3664.5356144770003,
+  "returncode": 0,
+  "metrics_samples": 733,
+  "first_metrics": {
+    "capture_fps": 12.090390379675085,
+    "connections": 0,
+    "counts": {
+      "camera_timeouts": 1,
+      "captured": 15,
+      "detections_published": 9,
+      "encoded": 15,
+      "processed": 9
+    },
+    "cpu_percent_one_core": 55.7606386232539,
+    "encode_fps": 12.090390379675085,
+    "fd_count": 40,
+    "pipeline": {
+      "camera": {
+        "device": "/dev/v4l/by-id/usb-icSpring_icspring_camera_202510220951-video-index0",
+        "negotiated_fps": 30.0,
+        "requested_fps": 30
+      },
+      "capture_error": "",
+      "capture_state": "running",
+      "inference_dropped": 5,
+      "inference_enabled": true,
+      "inference_error": "",
+      "inference_health": {
+        "active": true,
+        "active_ms": 23.314493,
+        "fast_streak": 8,
+        "last_service_ms": 58.92527,
+        "slow_streak": 0,
+        "state": "normal"
+      },
+      "inference_queue": 0,
+      "pool_available": 9,
+      "queue_high_watermark": 2,
+      "recorder": {
+        "current": {
+          "state": "idle"
+        },
+        "recent": []
+      },
+      "threshold": 0.3499999940395355,
+      "video_dropped": 0,
+      "video_enabled": true,
+      "video_error": "",
+      "video_healthy": true
+    },
+    "process_fps": 7.254234227805051,
+    "rate_window_s": 1.240654729,
+    "rss_mb": 52.91796875,
+    "sample_window": "latest 1024 observations per stage",
+    "stages_ms": {
+      "camera_driver_interval": {
+        "average": 43.709785714285715,
+        "count": 14,
+        "maximum": 51.965,
+        "p50": 40.141,
+        "p95": 51.965
+      },
+      "capture_copy": {
+        "average": 0.5798099333333334,
+        "count": 15,
+        "maximum": 1.85382,
+        "p50": 0.390831,
+        "p95": 1.85382
+      },
+      "capture_poll": {
+        "average": 43.75278566666666,
+        "count": 15,
+        "maximum": 51.099037,
+        "p50": 47.555021,
+        "p95": 51.099037
+      },
+      "capture_to_detection": {
+        "average": 89.52602833333333,
+        "count": 9,
+        "maximum": 125.583732,
+        "p50": 85.900735,
+        "p95": 125.583732
+      },
+      "capture_to_encoded": {
+        "average": 18.094845999999993,
+        "count": 15,
+        "maximum": 40.374240999999984,
+        "p50": 15.990797999999927,
+        "p95": 40.374240999999984
+      },
+      "capture_wait_and_copy": {
+        "average": 44.44045266666667,
+        "count": 15,
+        "maximum": 51.742448,
+        "p50": 47.875269,
+        "p95": 51.742448
+      },
+      "inference": {
+        "average": 53.143313,
+        "count": 9,
+        "maximum": 71.933798,
+        "p50": 50.921996,
+        "p95": 71.933798
+      },
+      "inference_service": {
+        "average": 70.98780044444443,
+        "count": 9,
+        "maximum": 125.257943,
+        "p50": 65.926092,
+        "p95": 125.257943
+      },
+      "input": {
+        "average": 1.7732876666666664,
+        "count": 9,
+        "maximum": 7.125656,
+        "p50": 1.027534,
+        "p95": 7.125656
+      },
+      "output": {
+        "average": 7.531490111111111,
+        "count": 9,
+        "maximum": 14.905222,
+        "p50": 6.854116,
+        "p95": 14.905222
+      },
+      "postprocess": {
+        "average": 2.153002555555555,
+        "count": 9,
+        "maximum": 3.876513,
+        "p50": 1.895527,
+        "p95": 3.876513
+      },
+      "preprocess": {
+        "average": 6.377244,
+        "count": 9,
+        "maximum": 37.431638,
+        "p50": 2.607772,
+        "p95": 37.431638
+      },
+      "queue_wait": {
+        "average": 18.2996722,
+        "count": 10,
+        "maximum": 46.156199,
+        "p50": 16.152671,
+        "p95": 46.156199
+      }
+    },
+    "uptime_s": 1.240654729
+  },
+  "last_metrics": {
+    "capture_fps": 20.171147022922415,
+    "connections": 0,
+    "counts": {
+      "camera_driver_sequence_gaps": 10,
+      "camera_timeouts": 1,
+      "captured": 73219,
+      "detections_published": 52907,
+      "encoded": 73219,
+      "events_written": 16,
+      "processed": 52908,
+      "stale_results_discarded": 1
+    },
+    "cpu_percent_one_core": 76.93134807332257,
+    "encode_fps": 20.171147022922415,
+    "fd_count": 22,
+    "pipeline": {
+      "camera": {
+        "device": "/dev/v4l/by-id/usb-icSpring_icspring_camera_202510220951-video-index0",
+        "negotiated_fps": 30.0,
+        "requested_fps": 30
+      },
+      "capture_error": "",
+      "capture_state": "stopped",
+      "inference_dropped": 20309,
+      "inference_enabled": true,
+      "inference_error": "",
+      "inference_health": {
+        "active": false,
+        "active_ms": 0.0,
+        "fast_streak": 52907,
+        "last_service_ms": 60.187283,
+        "slow_streak": 0,
+        "state": "normal"
+      },
+      "inference_queue": 0,
+      "pool_available": 12,
+      "queue_high_watermark": 2,
+      "recorder": {
+        "current": {
+          "complete": false,
+          "end_pts_ns": 3664261019702,
+          "event_id": "event-1789266547241484552-16",
+          "format": "Annex-B H264",
+          "manifest_ok": true,
+          "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789266547241484552-16.h264",
+          "reason": "shutdown",
+          "start_pts_ns": 3660361546917,
+          "state": "incomplete",
+          "write_ok": true
+        },
+        "recent": [
+          {
+            "complete": true,
+            "end_pts_ns": 45204388240,
+            "event_id": "event-1789262928234095962-1",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789262928234095962-1.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 41004653359,
+            "state": "completed",
+            "write_ok": true
+          },
+          {
+            "complete": true,
+            "end_pts_ns": 616111238201,
+            "event_id": "event-1789263499386999882-2",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789263499386999882-2.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 612514014246,
+            "state": "completed",
+            "write_ok": true
+          },
+          {
+            "complete": true,
+            "end_pts_ns": 1217033268733,
+            "event_id": "event-1789264100371412182-3",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789264100371412182-3.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 1212533272164,
+            "state": "completed",
+            "write_ok": true
+          },
+          {
+            "complete": true,
+            "end_pts_ns": 1817244274674,
+            "event_id": "event-1789264700516503588-4",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789264700516503588-4.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 1812691555543,
+            "state": "completed",
+            "write_ok": true
+          },
+          {
+            "complete": true,
+            "end_pts_ns": 2374004871563,
+            "event_id": "event-1789265257135112881-5",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789265257135112881-5.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 2370354048100,
+            "state": "completed",
+            "write_ok": true
+          },
+          {
+            "complete": true,
+            "end_pts_ns": 2417652677605,
+            "event_id": "event-1789265300931538809-6",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789265300931538809-6.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 2413853446321,
+            "state": "completed",
+            "write_ok": true
+          },
+          {
+            "complete": true,
+            "end_pts_ns": 3017814582191,
+            "event_id": "event-1789265901096420555-7",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789265901096420555-7.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 3013814268489,
+            "state": "completed",
+            "write_ok": true
+          },
+          {
+            "complete": true,
+            "end_pts_ns": 3502279959002,
+            "event_id": "event-1789266385704473194-8",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789266385704473194-8.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 3498330398317,
+            "state": "completed",
+            "write_ok": true
+          },
+          {
+            "complete": true,
+            "end_pts_ns": 3508730497195,
+            "event_id": "event-1789266392109973908-9",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789266392109973908-9.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 3504330430137,
+            "state": "completed",
+            "write_ok": true
+          },
+          {
+            "complete": true,
+            "end_pts_ns": 3535826700991,
+            "event_id": "event-1789266417167458022-10",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789266417167458022-10.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 3529826421108,
+            "state": "completed",
+            "write_ok": true
+          },
+          {
+            "complete": true,
+            "end_pts_ns": 3551573915439,
+            "event_id": "event-1789266434947804132-11",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789266434947804132-11.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 3547826950388,
+            "state": "completed",
+            "write_ok": true
+          },
+          {
+            "complete": true,
+            "end_pts_ns": 3580270746652,
+            "event_id": "event-1789266462801076788-12",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789266462801076788-12.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 3576322704225,
+            "state": "completed",
+            "write_ok": true
+          },
+          {
+            "complete": true,
+            "end_pts_ns": 3616717433236,
+            "event_id": "event-1789266499751417683-13",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789266499751417683-13.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 3612369066040,
+            "state": "completed",
+            "write_ok": true
+          },
+          {
+            "complete": true,
+            "end_pts_ns": 3623266144762,
+            "event_id": "event-1789266503411757892-14",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789266503411757892-14.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 3616866044256,
+            "state": "completed",
+            "write_ok": true
+          },
+          {
+            "complete": true,
+            "end_pts_ns": 3647365119297,
+            "event_id": "event-1789266529747973245-15",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789266529747973245-15.h264",
+            "reason": "tail_complete",
+            "start_pts_ns": 3642365307106,
+            "state": "completed",
+            "write_ok": true
+          },
+          {
+            "complete": false,
+            "end_pts_ns": 3664261019702,
+            "event_id": "event-1789266547241484552-16",
+            "format": "Annex-B H264",
+            "manifest_ok": true,
+            "path": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f/events/event-1789266547241484552-16.h264",
+            "reason": "shutdown",
+            "start_pts_ns": 3660361546917,
+            "state": "incomplete",
+            "write_ok": true
+          }
+        ]
+      },
+      "threshold": 0.3499999940395355,
+      "video_dropped": 0,
+      "video_enabled": true,
+      "video_error": "",
+      "video_healthy": false
+    },
+    "process_fps": 14.332130779444874,
+    "rate_window_s": 3.767757972,
+    "rss_mb": 60.7265625,
+    "sample_window": "latest 1024 observations per stage",
+    "stages_ms": {
+      "camera_driver_interval": {
+        "average": 49.99568749999998,
+        "count": 1024,
+        "maximum": 52.128,
+        "p50": 48.362,
+        "p95": 51.979
+      },
+      "capture_copy": {
+        "average": 0.5222997226562499,
+        "count": 1024,
+        "maximum": 1.90136,
+        "p50": 0.48008,
+        "p95": 0.822202
+      },
+      "capture_poll": {
+        "average": 49.290393014648544,
+        "count": 1024,
+        "maximum": 54.83641,
+        "p50": 48.883538,
+        "p95": 51.192687
+      },
+      "capture_to_detection": {
+        "average": 94.5598047802734,
+        "count": 1024,
+        "maximum": 135.171958,
+        "p50": 94.264524,
+        "p95": 119.172665
+      },
+      "capture_to_encoded": {
+        "average": 20.77423039257792,
+        "count": 1024,
+        "maximum": 42.94354399992153,
+        "p50": 19.384599999990314,
+        "p95": 31.047218999825418
+      },
+      "capture_wait_and_copy": {
+        "average": 49.913019335937484,
+        "count": 1024,
+        "maximum": 55.816402,
+        "p50": 49.80349,
+        "p95": 51.924766
+      },
+      "inference": {
+        "average": 51.01195624707037,
+        "count": 1024,
+        "maximum": 57.407138,
+        "p50": 50.936856,
+        "p95": 51.855642
+      },
+      "inference_service": {
+        "average": 69.69355018847656,
+        "count": 1024,
+        "maximum": 85.61659,
+        "p50": 68.53122,
+        "p95": 80.273674
+      },
+      "input": {
+        "average": 1.497755307617188,
+        "count": 1024,
+        "maximum": 3.305808,
+        "p50": 1.406989,
+        "p95": 2.351982
+      },
+      "output": {
+        "average": 11.018455002929688,
+        "count": 1024,
+        "maximum": 22.371535,
+        "p50": 9.82384,
+        "p95": 19.332101
+      },
+      "postprocess": {
+        "average": 3.238128395507811,
+        "count": 1024,
+        "maximum": 7.014029,
+        "p50": 2.974977,
+        "p95": 5.692414
+      },
+      "preprocess": {
+        "average": 2.9160637646484386,
+        "count": 1024,
+        "maximum": 9.383719,
+        "p50": 2.666396,
+        "p95": 4.87692
+      },
+      "queue_wait": {
+        "average": 24.866254591796906,
+        "count": 1024,
+        "maximum": 52.072932,
+        "p50": 25.676385,
+        "p95": 47.188384
+      }
+    },
+    "uptime_s": 3664.270111463
+  },
+  "recording_decode": [
+    {
+      "file": "event-1789262928234095962-1.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789263499386999882-2.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789264100371412182-3.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789264700516503588-4.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789265257135112881-5.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789265300931538809-6.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789265901096420555-7.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266385704473194-8.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266392109973908-9.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266417167458022-10.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266434947804132-11.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266462801076788-12.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266499751417683-13.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266503411757892-14.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266529747973245-15.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266547241484552-16.h264",
+      "returncode": 0,
+      "error": ""
+    }
+  ],
+  "passed": true,
+  "scope": "Board execution and final decode only; pair with PC report for duration, playback and reconnect assertions."
+}

@@ -1,0 +1,282 @@
+{
+  "passed": true,
+  "checks": {
+    "effective_observation_duration": true,
+    "no_suspend_or_clock_gap": true,
+    "sufficient_samples": true,
+    "decode_progress": true,
+    "no_observed_video_errors": true,
+    "control_available": true,
+    "planned_reconnections": true,
+    "pc_workers_stopped": true,
+    "board_runtime": true,
+    "board_graceful_exit": true,
+    "recordings_decodable": true,
+    "rss_growth_within_16mb_budget": true,
+    "fd_growth_within_4_budget": true
+  },
+  "source_commit": "cab3b1f41d122a2ae43d57e9055e9f7e5263643e",
+  "binary_sha256": "ff9609850aca35af7a39882456f5e882c59be89b0d68f2b3e3f4db6cc54d9605",
+  "config": {
+    "device": "/dev/v4l/by-id/usb-icSpring_icspring_camera_202510220951-video-index0",
+    "model": "models/yolov5s-640-640.rknn",
+    "width": 640,
+    "height": 480,
+    "fps": 30,
+    "preprocess": "cpu",
+    "output_activation": "logits",
+    "threshold": 0.35,
+    "nms": 0.45,
+    "queue": 2,
+    "pool": 12,
+    "video": true,
+    "bitrate": 2000000,
+    "rtsp_port": 18580,
+    "port": 19400,
+    "output": "/root/workspace/EdgeVision-Agent/output/soak-cab3b1f",
+    "event_confirm": 3,
+    "event_pre": 1,
+    "event_tail": 2,
+    "roi": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "run_seconds": 3900,
+    "infer_delay_ms": 0,
+    "synthetic": false,
+    "native_outputs": true,
+    "replay_yuyv": "",
+    "infer_slow_ms": 150,
+    "infer_stall_ms": 2000,
+    "infer_max_age_ms": 500,
+    "infer_degraded_interval_ms": 200,
+    "allow_fault_injection": false,
+    "record_max_mb": 256,
+    "record_max_files": 128,
+    "record_min_free_mb": 64,
+    "record_max_seconds": 30
+  },
+  "environment": "Linux kickpi 5.10.160 #79 SMP Mon Apr 27 13:55:58 CST 2026 aarch64 aarch64 aarch64 GNU/Linux",
+  "pc_observed_seconds": 3600.030999999988,
+  "pc_wall_seconds": 3600.0629999999946,
+  "decoded_frames": 71570,
+  "reconnections": 10,
+  "samples": 717,
+  "sample_gaps": [],
+  "stalled_sample_times": [],
+  "rss_start_mb": 55.3984375,
+  "rss_end_mb": 59.3359375,
+  "rss_peak_mb": 59.3359375,
+  "fd_start": 46,
+  "fd_end": 46,
+  "fd_peak": 48,
+  "shutdown_s": 0.20543936700050835,
+  "recording_decode": [
+    {
+      "file": "event-1789262928234095962-1.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789263499386999882-2.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789264100371412182-3.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789264700516503588-4.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789265257135112881-5.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789265300931538809-6.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789265901096420555-7.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266385704473194-8.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266392109973908-9.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266417167458022-10.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266434947804132-11.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266462801076788-12.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266499751417683-13.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266503411757892-14.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266529747973245-15.h264",
+      "returncode": 0,
+      "error": ""
+    },
+    {
+      "file": "event-1789266547241484552-16.h264",
+      "returncode": 0,
+      "error": ""
+    }
+  ],
+  "last_counts": {
+    "camera_driver_sequence_gaps": 10,
+    "camera_timeouts": 1,
+    "captured": 73219,
+    "detections_published": 52907,
+    "encoded": 73219,
+    "events_written": 16,
+    "processed": 52908,
+    "stale_results_discarded": 1
+  },
+  "steady_rates_fps": {
+    "captured": 19.98394587913698,
+    "processed": 14.43905477634425,
+    "encoded": 19.983663120794155
+  },
+  "rate_window_board_uptime_s": [
+    73.477285319,
+    3610.066126554
+  ],
+  "last_pipeline_drops": {
+    "inference_dropped": 20004,
+    "video_dropped": 0
+  },
+  "last_window_stages_ms": {
+    "camera_driver_interval": {
+      "average": 50.04253027343748,
+      "count": 1024,
+      "maximum": 100.103,
+      "p50": 48.36,
+      "p95": 51.991
+    },
+    "capture_copy": {
+      "average": 0.513148388671875,
+      "count": 1024,
+      "maximum": 1.343407,
+      "p50": 0.483871,
+      "p95": 0.788952
+    },
+    "capture_poll": {
+      "average": 49.35884754785154,
+      "count": 1024,
+      "maximum": 98.4427,
+      "p50": 49.201454,
+      "p95": 51.167315
+    },
+    "capture_to_detection": {
+      "average": 94.5818955966797,
+      "count": 1024,
+      "maximum": 135.171958,
+      "p50": 94.182236,
+      "p95": 118.951088
+    },
+    "capture_to_encoded": {
+      "average": 20.864237009772296,
+      "count": 1024,
+      "maximum": 42.04692699993029,
+      "p50": 19.565433000214398,
+      "p95": 29.52673099981621
+    },
+    "capture_wait_and_copy": {
+      "average": 49.97122571386721,
+      "count": 1024,
+      "maximum": 99.08757,
+      "p50": 49.952825,
+      "p95": 51.846933
+    },
+    "inference": {
+      "average": 51.04094191601559,
+      "count": 1024,
+      "maximum": 55.668363,
+      "p50": 50.992276,
+      "p95": 51.890642
+    },
+    "inference_service": {
+      "average": 69.7126121660155,
+      "count": 1024,
+      "maximum": 87.730743,
+      "p50": 68.73743,
+      "p95": 80.273674
+    },
+    "input": {
+      "average": 1.520893786132812,
+      "count": 1024,
+      "maximum": 3.43464,
+      "p50": 1.421573,
+      "p95": 2.455523
+    },
+    "output": {
+      "average": 10.924157252929685,
+      "count": 1024,
+      "maximum": 23.645234,
+      "p50": 9.833466,
+      "p95": 19.261518
+    },
+    "postprocess": {
+      "average": 3.2240762988281264,
+      "count": 1024,
+      "maximum": 7.014029,
+      "p50": 2.949311,
+      "p95": 5.668207
+    },
+    "preprocess": {
+      "average": 2.990838182617188,
+      "count": 1024,
+      "maximum": 9.221554,
+      "p50": 2.728812,
+      "p95": 5.099461
+    },
+    "queue_wait": {
+      "average": 24.858905702148462,
+      "count": 1024,
+      "maximum": 52.072932,
+      "p50": 25.313555,
+      "p95": 47.218429
+    }
+  },
+  "latency_scope": "Last rolling stage window, not a global one-hour percentile.",
+  "scope": "One measured run. Memory/FD thresholds are acceptance budgets, not proof of absence of leaks.",
+  "experiment_date": "2026-09-13",
+  "commands": {
+    "board": "python3 tests/soak_board.py --seconds 3900 --output output/soak-cab3b1f --device /dev/v4l/by-id/usb-icSpring_icspring_camera_202510220951-video-index0",
+    "pc": "python tools/pc_viewer.py --host 192.168.94.126 --port 19400 --rtsp-port 18580 --headless --seconds 3600 --reconnect-every 300 --reconnect-count 10 --record-every 600 --output pc-soak-cab3b1f"
+  },
+  "pc_environment": "Windows; Python 3.12.14; OpenCV 4.10.0.84 FFmpeg RTSP/TCP; NumPy 1.26.4"
+}
