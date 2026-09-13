@@ -37,3 +37,10 @@ v4l2-ctl -d /dev/video10 --set-fmt-video=width=640,height=480,pixelformat=YUYV -
 建议配置使用 /dev/v4l/by-id/usb-...-video-index0，实际路径通过 ls -l /dev/v4l/by-id 查询；不要把固定 video10 当成所有板卡稳定名称。多同型号无唯一序列号相机需另做设备属性匹配。
 
 证据见 [曝光对照](interview/evidence/camera-exposure.json)、[物理拔出状态](interview/evidence/physical-unplug.json)、[插入后恢复](interview/evidence/physical-recovery.json)。
+
+## 完整链路光照 A/B/A
+保持自动曝光与推理、MPP 编码、PC RTSP 解码同时开启，按累计计数计算：
+- 操作提示之前的原照明基线：20.01 FPS。
+- 增亮稳定区间：30.02 FPS。
+- 恢复原照明稳定区间：20.00 FPS。
+推理分别约 14.28、14.64、14.42 FPS。照度没有用仪器标定，因此结论限定于该设备和场景。报告见 [光照对照](interview/evidence/lighting-ab-a.json)，包含区间、配置、版本和计算口径。

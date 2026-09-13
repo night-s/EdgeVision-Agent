@@ -1,0 +1,73 @@
+{
+  "source_commit": "020fc851931b3b3700c85a91b7a56b979aeaea77",
+  "date": "2026-09-12",
+  "configuration_file": "lighting-config.json",
+  "command": "tests/soak_board.py with PC RTSP decode; operator changed illumination without changing exposure controls",
+  "conditions": [
+    {
+      "condition": "original_light_before_operator_prompt",
+      "start_uptime_s": 121.268342612,
+      "end_uptime_s": 186.338296793,
+      "duration_s": 65.06995418100001,
+      "samples": 14,
+      "rates": {
+        "captured": 20.009234928586675,
+        "encoded": 20.009234928586675,
+        "processed": 14.27694258729418
+      },
+      "last_driver_interval_ms": {
+        "average": 49.99185058593741,
+        "count": 1024,
+        "maximum": 52.094,
+        "p50": 48.344,
+        "p95": 52.001
+      }
+    },
+    {
+      "condition": "increased_light",
+      "start_uptime_s": 601.803835583,
+      "end_uptime_s": 897.122058051,
+      "duration_s": 295.31822246799993,
+      "samples": 60,
+      "rates": {
+        "captured": 30.01507975336837,
+        "encoded": 30.011693575598358,
+        "processed": 14.638446499753098
+      },
+      "last_driver_interval_ms": {
+        "average": 33.316197265625,
+        "count": 1024,
+        "maximum": 36.282,
+        "p50": 32.038,
+        "p95": 36.039
+      }
+    },
+    {
+      "condition": "restored_light",
+      "start_uptime_s": 1252.50601568,
+      "end_uptime_s": 1547.82885488,
+      "duration_s": 295.3228392000001,
+      "samples": 60,
+      "rates": {
+        "captured": 20.00183939718807,
+        "encoded": 20.00522552202254,
+        "processed": 14.421505669988827
+      },
+      "last_driver_interval_ms": {
+        "average": 49.991820312499975,
+        "count": 1024,
+        "maximum": 52.174,
+        "p50": 48.312,
+        "p95": 52.001
+      }
+    }
+  ],
+  "note": "Rates use cumulative count deltas over monotonic time. Illumination was manually changed, not calibrated in lux. This is evidence for this device and scene, not proof of the earlier 8.99 FPS root cause.",
+  "environment": {
+    "board": "RK3568",
+    "kernel": "5.10.160 aarch64",
+    "camera": "icSpring UVC",
+    "mode": "640x480 YUYV, auto exposure",
+    "video": "MPP H264 + PC RTSP/TCP decode"
+  }
+}

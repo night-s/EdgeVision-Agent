@@ -48,7 +48,7 @@ Release 构建；同一640×480 packed YUYV帧按30Hz回放，真实NPU与MPP编
 原始报告：
 - [原生输出CPU/RGA](interview/evidence/benchmark-native.json)
 - [浮点输出CPU](interview/evidence/benchmark-float.json)
-- 每个报告同目录的配置、run.log和metrics.jsonl可用于复现。
+- 公开配置见同目录 benchmark-*-config-*.json；完整 run.log、metrics.jsonl 和输入图像仅保存在板端 output 中，未公开。
 
 ### 固定帧正确性与阶段对照
 
@@ -88,7 +88,7 @@ CPU/RGA图像最大绝对差1/255，
   health hysteresis/stall observation, and recorder inactivity timeout).
 - tests/inference_health_validation.py passed 8 checks on synthetic 30 Hz input
   with real RKNN and MPP. Report:
-  output/health-validation-1789205943815652196/report.json.
+  [archived report](interview/evidence/health-acceptance.json).
 - Injected 600 ms delay -> degraded and expired results suppressed; injected
   1500 ms delay -> stalled observable; removing delay -> normal with fresh results.
 - Capture/encoding kept advancing during slowdown; snapshot completed; recording
@@ -98,3 +98,9 @@ CPU/RGA图像最大绝对差1/255，
   across the mixed fault/recovery run. Shutdown 0.219 s.
 - This is a policy acceptance test, not a steady-state performance benchmark,
   real NPU driver hang recovery test, or long-duration soak test.
+
+## P0 补充验证（2026-09-13）
+
+完整链路光照 A/B/A 对照：原光照 20.01 FPS、增亮 30.02 FPS、恢复 20.00 FPS；见 [报告](interview/evidence/lighting-ab-a.json) 与 [排查说明](camera-investigation.md)。历史 8.99 FPS 不作追溯归因。
+
+PC 播放与长稳方法见 [客户端说明](pc-viewer.md)。自动验收脚本 tools/analyze_soak.py 检查有效观察时长、采样断档、持续解码、重连、退出、录像解码及 RSS/FD 增量；不以电脑休眠后的墙钟时长充当运行时长。当前一小时测试结果待完成后单独归档。

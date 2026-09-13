@@ -14,4 +14,5 @@ jobs:
       - run: cmake -S . -B build-host -DEDGE_BUILD_AGENT=OFF -DCMAKE_BUILD_TYPE=Release
       - run: cmake --build build-host -j2
       - run: ctest --test-dir build-host --output-on-failure
+      - run: python tests/test_soak_analysis.py
       - run: python -m compileall -q tools tests cloud
